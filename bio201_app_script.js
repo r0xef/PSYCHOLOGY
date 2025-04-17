@@ -1,4 +1,4 @@
-// bio201_app_script.js - Logique SPA avec Design et Re-take (CORRIGÉ)
+// bio201_app_script.js - Logique SPA (CORRIGÉ pour l'erreur 'attachVerifyButtonListeners')
 
 class Bio201App {
     constructor() {
@@ -22,7 +22,7 @@ class Bio201App {
         this.countTodoEl = document.getElementById('count-todo');
         this.countIncorrectEl = document.getElementById('count-incorrect');
         this.countCorrectEl = document.getElementById('count-correct');
-        this.categoryTodoBtn = document.getElementById('category-todo');
+        this.categoryTodoBtn = document.getElementById('category-todo'); // On peut utiliser le container pour la délégation aussi
         this.categoryIncorrectBtn = document.getElementById('category-incorrect');
         this.categoryCorrectBtn = document.getElementById('category-correct');
         this.resetBtn = document.getElementById('reset-progress');
@@ -30,17 +30,16 @@ class Bio201App {
         // --- Références DOM (éléments du quiz) ---
         this.quizTitleEl = document.getElementById('quiz-title');
         this.quizInstructionsEl = document.getElementById('quiz-instructions');
-        this.quizFormEl = document.getElementById('quiz-form');
+        this.quizFormEl = document.getElementById('quiz-form'); // Conteneur pour la délégation
         this.quizResultsEl = document.getElementById('quiz-results');
         this.quizBackBtn = document.getElementById('quiz-backBtn');
-        // this.quizFinishBtn = document.getElementById('quiz-finishBtn'); // On utilise backBtn
         this.quizNextBtn = document.getElementById('quiz-nextBtn');
 
         // --- Vérification des données externes ---
         if (typeof quizDataBio201 === 'undefined' || !Array.isArray(quizDataBio201)) {
-             console.error("ERREUR CRITIQUE: quizDataBio201 n'est pas défini ou n'est pas un tableau. Assurez-vous que questions_bio201.js est chargé AVANT bio201_app_script.js.");
+             console.error("ERREUR CRITIQUE: quizDataBio201 n'est pas défini.");
              this.showError("Erreur critique : Impossible de charger les données des questions.");
-             this._initializationFailed = true; // Marqueur d'échec
+             this._initializationFailed = true;
              return;
         }
         this.quizData = quizDataBio201;
@@ -48,7 +47,7 @@ class Bio201App {
         this._initializationFailed = false;
     }
 
-    // --- Méthodes de Gestion de l'État ---
+    // --- Méthodes de Gestion de l'État --- (Inchangées)
 
     loadInitialState() {
         console.log("Chargement de l'état initial depuis localStorage...");
@@ -81,9 +80,8 @@ class Bio201App {
 
     synchronizeStatusesWithData() {
         let updated = false;
-        const currentIds = new Set(this.quizData.map(q => q?.id).filter(id => id)); // Set des IDs valides
+        const currentIds = new Set(this.quizData.map(q => q?.id).filter(id => id));
 
-        // Ajoute les questions manquantes
         this.quizData.forEach(q => {
             if (q && q.id && !this.questionStatuses.hasOwnProperty(q.id)) {
                 console.warn(`Statut manquant pour ${q.id}, ajouté comme 'todo'.`);
@@ -92,7 +90,6 @@ class Bio201App {
             }
         });
 
-        // Supprime les statuts des questions obsolètes
         Object.keys(this.questionStatuses).forEach(id => {
             if (!currentIds.has(id)) {
                  console.warn(`Statut trouvé pour une question inexistante (${id}), supprimé.`);
@@ -112,7 +109,6 @@ class Bio201App {
             localStorage.setItem(this.STORAGE_KEY, JSON.stringify(this.questionStatuses));
         } catch (e) {
             console.error("Erreur sauvegarde localStorage:", e);
-            // Peut-être informer l'utilisateur via l'interface ?
         }
     }
 
@@ -120,7 +116,7 @@ class Bio201App {
         if (this.questionStatuses.hasOwnProperty(questionId)) {
             console.log(`Mise à jour statut ${questionId}: ${this.questionStatuses[questionId]} -> ${newStatus}`);
             this.questionStatuses[questionId] = newStatus;
-            this.saveStatuses(); // Sauvegarde immédiate après chaque réponse
+            this.saveStatuses();
         } else {
             console.warn(`Tentative de mise à jour statut pour ID inconnu: ${questionId}`);
         }
@@ -130,10 +126,10 @@ class Bio201App {
         return this.questionStatuses[questionId] || 'todo';
     }
 
-    // --- Méthodes de Gestion des Vues ---
+    // --- Méthodes de Gestion des Vues --- (Inchangées)
 
     showView(viewToShow) {
-        if (!this.menuView || !this.quizView) return; // Sécurité si init a échoué
+        if (!this.menuView || !this.quizView) return;
         this.menuView.classList.remove('active');
         this.quizView.classList.remove('active');
         viewToShow.classList.add('active');
@@ -141,7 +137,7 @@ class Bio201App {
     }
 
     showMenuView() {
-        this.updateMenuView(); // Met à jour les compteurs avant d'afficher
+        this.updateMenuView();
         this.showView(this.menuView);
     }
 
@@ -149,8 +145,8 @@ class Bio201App {
         console.log(`Lancement du quiz pour la catégorie: ${category}`);
         this.currentCategory = category;
         this.currentBatchIndex = 0;
-        this.filterAndPrepareQuestions(); // Prépare les questions pour la catégorie
-        this.displayQuizBatch();      // Affiche le premier lot
+        this.filterAndPrepareQuestions();
+        this.displayQuizBatch(); // Appelle l'affichage du premier lot
         this.showView(this.quizView);
     }
 
@@ -158,11 +154,11 @@ class Bio201App {
          if (this.appContainer) {
              this.appContainer.innerHTML = `<p style='color:red; text-align:center; padding: 20px;'>${message}</p>`;
          } else {
-             alert(message); // Fallback
+             alert(message);
          }
     }
 
-    // --- Logique d'Affichage du Menu ---
+    // --- Logique d'Affichage du Menu --- (Inchangée)
 
     updateMenuView() {
         if (!this.countTodoEl || !this.countIncorrectEl || !this.countCorrectEl) return;
@@ -186,33 +182,35 @@ class Bio201App {
         this.countIncorrectEl.textContent = incorrectCount;
         this.countCorrectEl.textContent = correctCount;
 
-        this.categoryTodoBtn?.classList.toggle('disabled', todoCount === 0);
-        this.categoryIncorrectBtn?.classList.toggle('disabled', incorrectCount === 0);
-        this.categoryCorrectBtn?.classList.toggle('disabled', correctCount === 0);
+        // Utilisation de l'opérateur Optional Chaining (?) pour éviter les erreurs si les éléments n'existent pas
+        this.menuView.querySelector('#category-todo')?.classList.toggle('disabled', todoCount === 0);
+        this.menuView.querySelector('#category-incorrect')?.classList.toggle('disabled', incorrectCount === 0);
+        this.menuView.querySelector('#category-correct')?.classList.toggle('disabled', correctCount === 0);
+
 
         console.log(`Compteurs menu mis à jour: T=${todoCount}, I=${incorrectCount}, C=${correctCount}`);
     }
 
     // --- Logique d'Affichage du Quiz ---
 
-    filterAndPrepareQuestions() {
+    filterAndPrepareQuestions() { // Inchangée
         if (typeof this.questionStatuses !== 'object' || this.questionStatuses === null) {
             console.error("ERREUR: questionStatuses invalide avant filtrage.");
-            this.questionStatuses = {}; // Récupération
+            this.questionStatuses = {};
         }
         this.allQuestionsInCategory = this.quizData.filter(q => {
-            if (!q || !q.id) return false; // Ignore questions invalides
+            if (!q || !q.id) return false;
             return this.getStatus(q.id) === this.currentCategory;
         });
-        shuffleArray(this.allQuestionsInCategory); // Mélange les questions de la catégorie
+        shuffleArray(this.allQuestionsInCategory);
         this.totalBatches = Math.ceil(this.allQuestionsInCategory.length / this.BATCH_SIZE);
         console.log(`Catégorie: ${this.currentCategory}, Questions filtrées: ${this.allQuestionsInCategory.length}, Lots: ${this.totalBatches}`);
     }
 
-    displayQuizBatch() {
+    displayQuizBatch() { // CORRIGÉE : Ne pas appeler attachVerifyButtonListeners ici
         if (!this.quizFormEl || !this.quizResultsEl) return;
-        this.quizFormEl.innerHTML = ''; // Vide le formulaire précédent
-        this.quizResultsEl.textContent = ''; // Vide les messages précédents
+        this.quizFormEl.innerHTML = '';
+        this.quizResultsEl.textContent = '';
 
         const startIndex = this.currentBatchIndex * this.BATCH_SIZE;
         const endIndex = startIndex + this.BATCH_SIZE;
@@ -224,19 +222,20 @@ class Bio201App {
             const friendlyCategory = this.getCategoryFriendlyName(this.currentCategory);
              this.quizResultsEl.textContent = this.allQuestionsInCategory.length > 0 ? `Vous avez terminé tous les lots pour la catégorie "${friendlyCategory}" !` : `Aucune question trouvée dans la catégorie "${friendlyCategory}".`;
             if (this.quizNextBtn) this.quizNextBtn.disabled = true;
-            // Pas besoin de changer texte 'Terminer ce lot' car il ramène au menu
             return;
         }
 
         let quizHTML = '';
         currentBatchQuestions.forEach((question, index) => {
-            const displayNum = startIndex + index + 1; // Numérotation globale dans la catégorie
+            const displayNum = startIndex + index + 1;
             quizHTML += this.createQuestionHTML(question, displayNum);
         });
         this.quizFormEl.innerHTML = quizHTML;
 
-        this.attachVerifyButtonListeners();
+        // *** CORRECTION ICI: Appel supprimé ***
+        // this.attachVerifyButtonListeners(); // <--- SUPPRIMER CETTE LIGNE
 
+        // Le reste est inchangé
         if (this.quizNextBtn) {
             const isLastBatch = (this.currentBatchIndex + 1 >= this.totalBatches);
             this.quizNextBtn.disabled = isLastBatch;
@@ -247,7 +246,7 @@ class Bio201App {
         }
     }
 
-    updateQuizTitleAndInstructions() {
+    updateQuizTitleAndInstructions() { // Inchangée
         let title = "QCM Biologie - ";
         let instruction = "";
         const totalInCategory = this.allQuestionsInCategory.length;
@@ -261,14 +260,14 @@ class Bio201App {
         if(this.quizInstructionsEl) this.quizInstructionsEl.textContent = instruction;
     }
 
-     getCategoryFriendlyName(categoryKey){
+     getCategoryFriendlyName(categoryKey){ // Inchangée
          if (categoryKey === 'todo') return "À faire";
          if (categoryKey === 'incorrect') return "À revoir";
          if (categoryKey === 'correct') return "Réussies";
          return "Inconnue";
     }
 
-    // Fonction pour générer le HTML d'UNE question (CORRIGÉE)
+    // Fonction pour générer le HTML d'UNE question (Inchangée par rapport à la précédente version)
     createQuestionHTML(questionData, displayIndex) {
          if (!questionData || !questionData.id) {
               console.error("Tentative de créer HTML pour question invalide:", questionData);
@@ -280,8 +279,8 @@ class Bio201App {
          let optionsHTML = '';
          if (questionData.options && Array.isArray(questionData.options)) {
             optionsHTML = questionData.options.map(option => `
-                <label> 
-                    <input type="checkbox" name="q${questionId}_options" value="${escapeHtml(option.value)}"> 
+                <label>
+                    <input type="checkbox" name="q${questionId}_options" value="${escapeHtml(option.value)}">
                     <span>${escapeHtml(option.text)}</span>
                 </label>
             `).join('');
@@ -297,14 +296,14 @@ class Bio201App {
                 <div class="options">
                     ${optionsHTML}
                 </div>
-                <button type="button" class="verify-button button button-primary" data-id="${questionId}">Vérifier</button> 
-                ${feedbackHTML} 
-                ${referenceHTML} 
+                <button type="button" class="verify-button button button-primary" data-id="${questionId}">Vérifier</button>
+                ${feedbackHTML}
+                ${referenceHTML}
             </div>
         `;
     }
 
-    // --- Logique de Vérification d'une Réponse ---
+    // --- Logique de Vérification d'une Réponse --- (Inchangée)
 
     handleVerifyClick(event) {
         const buttonElement = event.target;
@@ -312,7 +311,7 @@ class Bio201App {
         if (!questionId) return;
 
         const questionBlock = document.getElementById(questionId);
-        if (buttonElement.disabled) return; // Vérifie si bouton déjà cliqué dans ce rendu
+        if (buttonElement.disabled) return;
 
         const questionData = this.quizData.find(q => q.id === questionId);
         if (!questionData || !questionData.options || !questionData.correctAnswers) return;
@@ -327,7 +326,6 @@ class Bio201App {
         let newStatus = isCorrect ? 'correct' : 'incorrect';
         this.updateQuestionStatus(questionId, newStatus);
 
-        // --- Appliquer le Feedback Visuel ---
         const feedbackElement = questionBlock.querySelector('.feedback-area');
         const referenceElement = questionBlock.querySelector('.reference-cours');
         const allLabels = questionBlock.querySelectorAll('.options label');
@@ -377,7 +375,8 @@ class Bio201App {
     attachEventListeners() {
         console.log("Attachement des écouteurs d'événements.");
 
-        const menuContainer = document.querySelector('.menu-container');
+        // Menu: Clic sur les catégories (délégation sur le conteneur)
+        const menuContainer = this.menuView.querySelector('.menu-container'); // Cible plus précise
         menuContainer?.addEventListener('click', (event) => {
              const categoryBox = event.target.closest('.category-box');
              if (categoryBox && !categoryBox.classList.contains('disabled')) {
@@ -388,6 +387,7 @@ class Bio201App {
              }
         });
 
+        // Menu: Bouton Reset
         this.resetBtn?.addEventListener('click', () => {
             if (confirm("Êtes-vous sûr de vouloir effacer toute votre progression pour ce QCM ? Cette action est irréversible.")) {
                  console.log("Réinitialisation demandée.");
@@ -397,6 +397,7 @@ class Bio201App {
              }
         });
 
+        // Quiz: Boutons de navigation
         this.quizBackBtn?.addEventListener('click', () => this.showMenuView());
         this.quizNextBtn?.addEventListener('click', () => {
             if (!this.quizNextBtn.disabled) {
@@ -406,15 +407,18 @@ class Bio201App {
             }
         });
 
-        // Attacher l'écouteur délégué pour les boutons Vérifier une seule fois
+        // Quiz: Clic sur bouton "Vérifier" (délégation sur le formulaire)
+        // CORRECTION: S'assurer que 'this' dans handleVerifyClick est correct
         this.quizFormEl?.addEventListener('click', (event) => {
              if (event.target.classList.contains('verify-button')) {
+                 // Appeler handleVerifyClick DANS LE CONTEXTE de l'instance 'app'
                  this.handleVerifyClick(event);
              }
          });
     }
 
-    // Note: attachVerifyButtonListeners n'est plus nécessaire grâce à la délégation
+    // *** CORRECTION ICI: Supprimer la méthode redondante ***
+    // attachVerifyButtonListeners() { ... } // <--- MÉTHODE SUPPRIMÉE
 
     // --- Initialisation de l'application ---
     init() {
@@ -424,7 +428,7 @@ class Bio201App {
              return;
          }
          this.loadInitialState();
-         this.attachEventListeners();
+         this.attachEventListeners(); // Attache TOUS les écouteurs nécessaires ici
          this.showMenuView();
          console.log("Application initialisée.");
     }
@@ -438,7 +442,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// --- Fonctions Utilitaires Globales --- (Peuvent être mises dans un fichier séparé et importées avec ES Modules plus tard)
+// --- Fonctions Utilitaires Globales ---
 function shuffleArray(array) {
     let currentIndex = array.length, randomIndex;
     while (currentIndex > 0) {
