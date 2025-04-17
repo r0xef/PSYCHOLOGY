@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accueil - QCM Psychologie USMB</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f2f5;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .header {
+            background-color: #0056b3;
+            color: white;
+            padding: 20px 15px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+
+        .menu-container {
+            display: flex;
+            flex-wrap: wrap;
+            width: 100%;
+            padding: 0;
+            box-sizing: border-box;
+            gap: 0;
+        }
+
+        /* --- Style des Rectangles (Cartes UE) --- */
+        .ue-card {
+            background-color: white; /* Fallback */
+            color: white;
+            text-decoration: none;
+            border-radius: 0;
+            box-shadow: none;
+            /* Bordure fine pour séparer visuellement */
+             border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+             border-right: 1px solid rgba(255, 255, 255, 0.15);
+
+            width: 50%;
+            height: 450px; /* Hauteur fixe comme demandé */
+            padding: 25px;
+            transition: transform 0.2s ease, filter 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: center; /* Centre verticalement */
+            align-items: center; /* Centre horizontalement */
+            text-align: center;
+            box-sizing: border-box;
+            overflow: hidden;
+            position: relative;
+
+            /* Animation */
+            opacity: 0;
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+         /* Supprime la bordure droite pour la 2ème colonne */
+        .ue-card:nth-child(2n) {
+             border-right: none;
+        }
+         /* Supprime la bordure bas pour les deux derniers éléments */
+         .ue-card:nth-last-child(-n+2) {
+              border-bottom: none;
+         }
+         /* Ajustement si nombre impair et dernier */
+         .ue-card:last-child:nth-child(odd) {
+             border-bottom: none; /* Pas de bordure bas non plus si seul sur la dernière ligne */
+             border-right: none;
+         }
+
+
+        /* --- Couleurs vives et distinctes --- */
+        .ue-card:nth-child(1) { background-color: #FF5733; animation-delay: 0.05s; }
+        .ue-card:nth-child(2) { background-color: #33A1FF; animation-delay: 0.1s; }
+        .ue-card:nth-child(3) { background-color: #FFC300; animation-delay: 0.15s; }
+        .ue-card:nth-child(4) { background-color: #33FF57; animation-delay: 0.2s; }
+        .ue-card:nth-child(5) { background-color: #8E44AD; animation-delay: 0.25s; }
+        .ue-card:nth-child(6) { background-color: #FF33FF; animation-delay: 0.3s; }
+        .ue-card:nth-child(7) { background-color: #FF338D; animation-delay: 0.35s; }
+        .ue-card:nth-child(8) { background-color: #44D7B6; animation-delay: 0.4s; }
+        .ue-card:nth-child(9) { background-color: #33F6FF; animation-delay: 0.45s; }
+        .ue-card:nth-child(10){ background-color: #FF8C33; animation-delay: 0.5s; }
+
+
+        /* --- Style du Logo SVG intégré --- */
+        .ue-logo-svg {
+            width: 90px; /* Taille du logo SVG */
+            height: 90px;
+            margin-bottom: 25px;
+            opacity: 0.35; /* Effet "fondu" */
+            filter: drop-shadow(0 1px 1px rgba(0,0,0,0.3));
+            transition: opacity 0.3s ease;
+            color: white; /* Couleur de base pour le SVG (via fill="currentColor") */
+        }
+         .ue-card:hover .ue-logo-svg {
+             opacity: 0.6;
+         }
+
+        /* --- Contenu Principal (Titre, Code) --- */
+         .ue-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .ue-code {
+            font-size: 0.9em;
+            font-weight: normal;
+            opacity: 0.8;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .ue-title {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin: 0;
+            line-height: 1.3;
+        }
+
+        /* Animation Keyframes */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .ue-card:hover {
+            filter: brightness(115%);
+            transform: scale(1.01);
+            z-index: 10;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 0;
+            padding: 25px;
+            font-size: 0.9em;
+            color: #6c757d;
+            background-color: #e9ecef;
+            width: 100%;
+            box-sizing: border-box;
+            position: relative;
+            z-index: 5;
+        }
+
+        /* Responsive: sur petits écrans, passer à 1 colonne */
+        @media (max-width: 768px) {
+             .ue-card {
+                 width: 100%; /* Une seule carte par ligne */
+                 height: 300px; /* Hauteur réduite pour petits écrans */
+                 border-right: none; /* Pas de bordure droite en 1 colonne */
+             }
+             /* Pas besoin de supprimer bordure bas pour le dernier si 1 colonne */
+             .ue-card:last-child {
+                  border-bottom: none;
+             }
+              .ue-logo-svg { /* Ajuster taille logo sur petit écran */
+                 width: 70px;
+                 height: 70px;
+                 margin-bottom: 15px;
+             }
+             .ue-title {
+                 font-size: 1.3em;
+             }
+        }
+
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <h1>Psychologie USMB</h1>
+    </header>
+
+    <main class="menu-container">
+
+        <a href="quiz.html?ue=ETHI202_PSY" class="ue-card">
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" class="ue-logo-svg">
+                <path fill="currentColor" d="M50 10 L10 40 L20 40 L20 45 A15 15 0 0 0 50 55 A15 15 0 0 0 80 45 L80 40 L90 40 Z M15 45 L45 45 A10 10 0 0 1 25 50 A10 10 0 0 1 15 45 Z M55 45 L85 45 A10 10 0 0 1 65 50 A10 10 0 0 1 55 45 Z M48 50 L48 90 L52 90 L52 50 Z" />
+            </svg>
+            <div class="ue-content">
+                <span class="ue-code">ETHI202_PSY</span>
+                <h2 class="ue-title">Principes éthiques et bioéthiques</h2>
+            </div>
+        </a>
+
+        <a href="quiz.html?ue=ETHI201_PSY" class="ue-card">
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" class="ue-logo-svg">
+                <path fill="currentColor" d="M50 30 Q50 10 70 10 A20 20 0 0 1 90 30 Q90 50 50 90 Q10 50 10 30 A20 20 0 0 1 30 10 Q50 10 50 30 Z M45 40 H35 V50 H45 V60 H55 V50 H65 V40 H55 V30 H45 Z" />
+            </svg>
+            <div class="ue-content">
+                <span class="ue-code">ETHI201_PSY</span>
+                <h2 class="ue-title">Normalité, pathologie et éthique du soin</h2>
+            </div>
+        </a>
+
+        <a href="quiz.html?ue=ANIM201" class="ue-card">
+             <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" class="ue-logo-svg">
+                <ellipse fill="currentColor" cx="50" cy="65" rx="25" ry="20"/>
+                <ellipse fill="currentColor" cx="25" cy="35" rx="10" ry="15"/>
+                <ellipse fill="currentColor" cx="45" cy="30" rx="10" ry="15"/>
+                <ellipse fill="currentColor" cx="65" cy="30" rx="10" ry="15"/>
+                <ellipse fill="currentColor" cx="85" cy="35" rx="10" ry="15" transform="rotate(10 85 35)"/>
+             </svg>
+             <div class="ue-content">
+                 <span class="ue-code">ANIM201</span>
+                <h2 class="ue-title">Communication animale</h2>
+            </div>
+        </a>
+
+        <a href="quiz.html?ue=ETUD201_PSY" class="ue-card">
+             <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" class="ue-logo-svg">
+                <path fill="currentColor" d="M5 40 L50 20 L95 40 L50 60 Z M20 45 L20 70 A30 30 0 0 0 50 80 A30 30 0 0 0 80 70 L80 45 L50 65 Z M80 75 L70 75 L70 90 L80 90 Z"/>
+             </svg>
+            <div class="ue-content">
+                 <span class="ue-code">ETUD201_PSY</span>
+                <h2 class="ue-title">Devenir étudiant</h2>
+            </div>
+        </a>
+
+        <a href="BIO201.html" class="ue-card">
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" class="ue-logo-svg">
+               <path fill="none" stroke="currentColor" stroke-width="5" d="M30 10 Q50 25 30 40 T30 70 T30 100 M70 10 Q50 25 70 40 T70 70 T70 100"/>
+               <line stroke="currentColor" stroke-width="4" x1="33" y1="25" x2="67" y2="25"/>
+               <line stroke="currentColor" stroke-width="4" x1="28" y1="55" x2="72" y2="55"/>
+               <line stroke="currentColor" stroke-width="4" x1="33" y1="85" x2="67" y2="85"/>
+            </svg>
+            <div class="ue-content">
+                 <span class="ue-code">BIOL201_PSY</span>
+                <h2 class="ue-title">Fondamentaux biologiques en psychologie</h2>
+            </div>
+        </a>
+
+        <a href="quiz.html?ue=PERC201_PSY" class="ue-card">
+             <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" class="ue-logo-svg">
+               <path fill="none" stroke="currentColor" stroke-width="5" d="M10 50 Q50 20 90 50 Q50 80 10 50 Z"/>
+               <circle fill="currentColor" cx="50" cy="50" r="15"/>
+               </svg>
+            <div class="ue-content">
+                 <span class="ue-code">PERC201_PSY</span>
+                <h2 class="ue-title">Perception et système sensoriels</h2>
+            </div>
+        </a>
+
+        <a href="quiz.html?ue=PSYC201_PSY" class="ue-card">
+             <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" class="ue-logo-svg">
+               <circle fill="currentColor" cx="50" cy="30" r="15"/> <path fill="currentColor" d="M35 50 A15 35 0 0 1 65 50 Z"/>
+               <circle fill="currentColor" cx="25" cy="45" r="10"/> <path fill="currentColor" d="M15 60 A10 25 0 0 1 35 60 Z"/>
+               <circle fill="currentColor" cx="75" cy="45" r="10"/> <path fill="currentColor" d="M65 60 A10 25 0 0 1 85 60 Z"/>
+            </svg>
+            <div class="ue-content">
+                 <span class="ue-code">PSYC201_PSY</span>
+                <h2 class="ue-title">Influence sociale et persuasion</h2>
+            </div>
+        </a>
+
+        <a href="QCM-apprentissage-1.html" class="ue-card">
+             <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" class="ue-logo-svg">
+                <path fill="currentColor" d="M50 10 C20 10 10 30 10 50 C10 70 20 90 50 90 C80 90 90 70 90 50 C90 30 80 10 50 10 Z M50 15 C70 15 85 30 85 50 C85 60 80 70 70 75 M50 15 C30 15 15 30 15 50 C15 60 20 70 30 75 M48 15 L48 90 M30 75 C35 70 40 65 40 50 C40 35 35 30 30 25 M70 75 C65 70 60 65 60 50 C60 35 65 30 70 25"/>
+             </svg>
+            <div class="ue-content">
+                 <span class="ue-code">APPR201_PSY</span>
+                <h2 class="ue-title">Apprentissage et comportement</h2>
+            </div>
+        </a>
+
+        <a href="quiz.html?ue=STAT201_PSY" class="ue-card">
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" class="ue-logo-svg">
+               <rect fill="currentColor" x="10" y="70" width="20" height="20"/>
+               <rect fill="currentColor" x="40" y="40" width="20" height="50"/>
+               <rect fill="currentColor" x="70" y="20" width="20" height="70"/>
+               <line stroke="currentColor" stroke-width="3" x1="5" y1="90" x2="95" y2="90"/>
+               <line stroke="currentColor" stroke-width="3" x1="10" y1="10" x2="10" y2="95"/>
+            </svg>
+            <div class="ue-content">
+                 <span class="ue-code">STAT201_PSY</span>
+                <h2 class="ue-title">Statistiques 2</h2>
+            </div>
+        </a>
+
+        <a href="quiz.html?ue=METH201_PSY" class="ue-card">
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" class="ue-logo-svg">
+               <circle fill="none" stroke="currentColor" stroke-width="8" cx="45" cy="45" r="30"/>
+               <line stroke="currentColor" stroke-width="10" x1="70" y1="70" x2="90" y2="90"/>
+            </svg>
+            <div class="ue-content">
+                 <span class="ue-code">METH201_PSY</span>
+                <h2 class="ue-title">Les méthodes</h2>
+            </div>
+        </a>
+        </main>
+
+    <footer class="footer">
+        <p>&copy; Propriété de Paul Mottet 2025 - QCM Psychologie USMB</p>
+    </footer>
+
+</body>
+</html>

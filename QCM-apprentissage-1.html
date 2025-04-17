@@ -1,0 +1,1223 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Interactif - Apprentissage et Comportements</title>
+    <style>
+        
+        body {
+            font-family: sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            background-color: #f8f9fa;
+        }
+        
+        .quiz-container {
+            max-width: 850px;
+            margin: auto;
+            background: #fff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+        }
+        .question-block {
+            margin-bottom: 30px; /* More space between questions */
+            padding: 20px;
+            border: 1px solid #dee2e6;
+            border-left: 5px solid #007bff; /* Blue accent */
+            border-radius: 5px;
+            background-color: #fff;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+        .question-block p {
+            font-weight: bold;
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 1.1em; /* Slightly larger question text */
+        }
+        .options label {
+            display: block;
+            margin-bottom: 10px;
+            cursor: pointer;
+            padding: 10px 15px;
+            border-radius: 4px;
+            border: 1px solid #eee;
+            transition: background-color 0.2s ease, border-color 0.2s ease;
+            position: relative; /* Needed for absolute positioning of feedback marks if added */
+        }
+         /* Prevent hover styles after verification */
+        .question-block:not(.verified) .options label:hover {
+             background-color: #f1f3f5;
+             border-color: #ced4da;
+        }
+        .options input[type="checkbox"] {
+            margin-right: 12px;
+            vertical-align: middle;
+        }
+
+        /* --- Feedback Styling --- */
+        .feedback-area {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 4px;
+            font-weight: bold;
+            display: none; /* Hidden initially */
+        }
+        .reference-cours {
+             margin-top: 15px;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    font-size: 0.9em;
+    display: block !important; /* Force l'affichage */
+        }
+
+      
+      
+
+/* Question block status */
+.question-block.verified.correct {
+    border-left-color: #28a745; /* Green accent for correct */
+}
+.question-block.verified.incorrect {
+    border-left-color: #dc3545; /* Red accent for incorrect */
+}
+
+        /* Feedback area status */
+         .feedback-area.correct {
+            color: #155724;
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            display: block;
+        }
+         .feedback-area.incorrect {
+            color: #721c24;
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            display: block;
+        }
+
+        /* Styling for individual labels after check */
+        .options label.label-correct {
+             /* Correct answer (whether selected or not) */
+             border-left: 4px solid #28a745; /* Green left border */
+             background-color: #f0fff4; /* Very light green background */
+         }
+         .options label.label-incorrect-selected {
+             /* Incorrect answer that was selected */
+             background-color: #fff5f5; /* Light red background */
+             border-color: #f5c6cb;
+             color: #721c24;
+             border-left: 4px solid #dc3545; /* Red left border */
+         }
+          .options label.label-correct.missed {
+             /* Correct answer that was NOT selected */
+             background-color: #fff9e6; /* Light yellow background */
+             border-color: #ffeeba;
+             font-style: italic; /* Indicate missed */
+         }
+        .options input[type="checkbox"]:disabled {
+             cursor: not-allowed;
+        }
+        .options input[type="checkbox"]:disabled + span {
+             opacity: 0.7;
+        }
+
+
+        /* Buttons */
+        .verify-button {
+            margin-top: 15px;
+            padding: 8px 15px;
+            font-size: 0.9em;
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            transition: background-color 0.2s ease;
+        }
+        .verify-button:hover:not(:disabled) {
+            background-color: #0056b3;
+        }
+         .verify-button:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+
+        #terminerBtn {
+            display: block;
+            margin: 40px auto 20px auto; /* More margin top */
+            padding: 12px 25px;
+            font-size: 18px;
+            cursor: pointer;
+            background-color: #28a745; /* Green button */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.2s ease;
+        }
+        #terminerBtn:hover {
+            background-color: #218838;
+        }
+        #results {
+            text-align: center;
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-top: 30px;
+            padding: 15px;
+            border-radius: 5px;
+            min-height: 50px; /* Ensure space even when empty */
+        }
+        #results.passed { /* Example class, logic not implemented yet */
+             background-color: #d4edda;
+             color: #155724;
+         }
+        #results.failed { /* Example class, logic not implemented yet */
+             background-color: #f8d7da;
+             color: #721c24;
+         }
+        .quiz-instructions {
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 1.1em;
+            color: #6c757d;
+        }
+        #back-to-home-btn {
+         position: fixed; /* Reste fixe lors du défilement */
+         top: 15px;       /* Distance du haut */
+         left: 15px;      /* Distance de la gauche */
+       z-index: 1000;   /* S'assure qu'il est au-dessus des autres éléments */
+       background-color: #0056b3; /* Couleur de fond (bleu foncé) */
+    color: white;          /* Couleur du texte */
+    padding: 8px 15px;    /* Espacement interne */
+    border-radius: 5px;   /* Coins arrondis */
+    text-decoration: none; /* Enlève le soulignement du lien */
+    font-size: 0.9em;
+    font-weight: bold;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* Ombre légère */
+    transition: background-color 0.2s ease; /* Transition douce au survol */
+}
+
+#back-to-home-btn:hover {
+    background-color: #003d80; /* Bleu plus foncé au survol */
+    color: white;
+}
+    </style>
+</head>
+<body>
+ <a href="Accueil.html" id="back-to-home-btn" title="Retour à l'accueil">← Accueil</a>
+<div class="quiz-container">
+    <h1>Quiz Interactif : Apprentissage et Comportements</h1>
+    <p class="quiz-instructions">Pour chaque question, cochez la ou les réponses qui vous semblent correctes. Vérifiez votre réponse avant de passer à la suivante.</p>
+
+    <form id="quiz-form">
+        </form>
+
+    <button id="terminerBtn" type="button" onclick="calculerScoreFinal()">Terminé</button>
+    <div id="results"></div>
+
+</div>
+
+<script>
+    // --- Données du Quiz (enrichies avec referenceText) ---
+    const quizData = [
+      {
+        id: 'q1', text: "Selon la définition de Lieberman (2000) citée dans le cours, comment l'apprentissage se traduit-il ?", options: [ { value: 'a', text: 'a) Par un changement temporaire dû à la fatigue.' }, { value: 'b', text: 'b) Par un processus de maturation biologique uniquement.' }, { value: 'c', text: 'c) Par un changement relativement permanent dans notre capacité à effectuer, dû à des expériences particulières.' }, { value: 'd', text: 'd) Par l\'acquisition de savoirs innés non modifiables.' } ], correctAnswers: ['c'], referenceCours: "[APP201 - Cours 1 - définitions.pdf]: Page 6 / Source 144", referenceText: "l'apprentissage se traduit par un changement relativement permanent dans notre capacité à\neffectuer, changement dû à des types particuliers d'expériences (Lieberman, 2000)"
+      },
+      {
+        id: 'q2', text: "Quelle définition de l'apprentissage met l'accent sur le mécanisme responsable de la modification de l'état d'un individu suite à une expérience, impliquant la mémoire conservée dans le système nerveux ?", options: [ { value: 'a', text: 'a) Celle de Lieberman (2000).' }, { value: 'b', text: 'b) Celle de Giraldeau & Dubois (2024).' }, { value: 'c', text: 'c) Celle de Novak (1996).' }, { value: 'd', text: 'd) Celle de Malcuit, Pomerleau et Maurice (1995).' } ], correctAnswers: ['b'], referenceCours: "[APP201 - Cours 1 - définitions.pdf]: Page 7 / Source 147", referenceText: "Le mécanisme responsable de la modification de l'état d'un individu qui peut se manifester par une\nmodification de son comportement, suite à une expérience dont la mémoire est conservée dans le\nsystème nerveux (Giraldeau & Dubois, 2024)"
+      },
+      {
+        id: 'q3', text: "Selon Tinbergen, quelle cause explique un comportement en se focalisant sur son utilité adaptative pour la survie et la reproduction de l'individu ?", options: [ { value: 'a', text: 'a) La cause proximale.' }, { value: 'b', text: 'b) La cause phylogénétique.' }, { value: 'c', text: 'c) La cause fonctionnelle.' }, { value: 'd', text: 'd) La cause ontogénétique.' } ], correctAnswers: ['c'], referenceCours: "[APP201 - Cours 1 - définitions.pdf]: Page 10 / Source 154", referenceText: "Cause fonctionnelle: comportement sélectionné car adaptatif et donc utile à l'individu\n\n le sommeil permet une récupération physiologique, psychologique et intellectuelle; l'absence de lumière\nempêche l'activité humaine, la récupération est donc plus indiquée à cette période"
+      },
+      {
+        id: 'q4', text: "Lequel de ces changements N'EST PAS considéré comme de l'apprentissage ?", options: [ { value: 'a', text: 'a) Apprendre à faire du vélo.' }, { value: 'b', text: 'b) La salivation d\'un chien au son d\'une cloche après conditionnement.' }, { value: 'c', text: 'c) La diminution de la performance due à la fatigue intense.' }, { value: 'd', text: 'd) Apprendre une langue étrangère.' } ], correctAnswers: ['c'], referenceCours: "[APP201 - Cours 1 - définitions.pdf]: Page 12 / Source 158", referenceText: "Changements temporaires et spécifiques: Fatigue; Faim, Soif (motivation)" // Fatigue explicitement citée comme non-apprentissage
+      },
+       {
+        id: 'q5', text: 'Qu\'est-ce qu\'une "période sensible" (ou critique) dans le contexte de l\'apprentissage ?', options: [ { value: 'a', text: 'a) Une période où l\'apprentissage est impossible.' }, { value: 'b', text: 'b) Une période particulièrement propice à l\'acquisition d\'un comportement ou d\'une habileté spécifique.' }, { value: 'c', text: 'c) La période pendant laquelle un comportement appris s\'éteint.' }, { value: 'd', text: 'd) Une période où l\'organisme est particulièrement résistant au changement.' } ], correctAnswers: ['b'], referenceCours: "[APP201 - Cours 1 - définitions.pdf]: Page 9 & 13 / Source 151 & 161", referenceText: "Période critique / période sensible: chant et empreinte chez oiseaux; langage chez humain (Source 151) ... Période sensible: période propice à l'acquisition d'un comportement ou habileté → empreinte (Source 161)"
+      },
+       // ... (Données enrichies pour q6 à q69) ...
+      {
+         id: 'q6', text: "Quelle approche historique de la psychologie, mentionnée dans le cours, se concentre sur les fonctions adaptatives de la conscience et a été portée par William James ?", options: [ { value: 'a', text: 'a) Le Structuralisme.' }, { value: 'b', text: 'b) Le Fonctionnalisme.' }, { value: 'c', text: 'c) Le Béhaviorisme.' }, { value: 'd', text: 'd) Le Cognitivisme.' } ], correctAnswers: ['b'], referenceCours: "[APP201 - Cours 1 - définitions.pdf]: Page 23 / Source 184", referenceText: "1890 Fonctionnalisme\nWilliam James - The principles of psychology\nfonctions adaptatives de la conscience\nJames Dewey - apprentissage et éducation"
+      },
+      {
+         id: 'q7', text: "En éthologie, qu'est-ce qu'une description fonctionnelle d'un comportement ?", options: [ { value: 'a', text: 'a) Une description des mouvements précis et de la posture de l\'animal.' }, { value: 'b', text: 'b) Une description des aspects moteurs et physiologiques impliqués.' }, { value: 'c', text: 'c) Une description basée sur les conséquences ou l\'utilité du comportement.' }, { value: 'd', text: 'd) Une liste exhaustive de toutes les actions possibles d\'une espèce (éthogramme).' } ], correctAnswers: ['c'], referenceCours: "[APP201 - Cours 1 - définitions.pdf]: Page 20 / Source 174", referenceText: "Description fonctionnelle: la fonction du comportement; description par ses conséquences\n mimique faciale de menace\n Langage: la mère sélectionne des sons par renforcement et les interactions façonnent l'interlocuteur"
+      },
+      {
+         id: 'q8', text: "Comment les théories structuralistes expliquent-elles le comportement en psychologie ?", options: [ { value: 'a', text: 'a) En se concentrant sur l\'utilité et l\'adaptabilité du comportement.' }, { value: 'b', text: 'b) En analysant les relations entre les stimuli environnementaux et les réponses.' }, { value: 'c', text: 'c) En décrivant les facteurs internes (biologiques, cognitifs, neuronaux) qui sous-tendent le comportement.' }, { value: 'd', text: 'd) En observant uniquement les actions observables sans inférer de processus internes.' } ], correctAnswers: ['c'], referenceCours: "[APP201 - Cours 1 - définitions.pdf]: Page 21 / Source 176-178", referenceText: "Théories structurelles: explication structurelle des comportements\n comprendre le comportement en se concentrant sur les éléments qui composent l'individu ou son\nsystème. (Source 176) • Décrire les facteurs internes comme la biologie, la génétique, ou les structures cognitives et neuronales\nqui sous-tendent le comportement. (Source 177) • identifier les composants, les mécanismes ou les structures qui sont impliquées dans l'apparition d'un\ncomportement. (Source 178)"
+      },
+      {
+        id: 'q9', text: "Comment se nomme la baisse de l'intensité d'une réponse suite à la présentation répétée d'un stimulus ?", options: [ { value: 'a', text: 'a) Sensibilisation.' }, { value: 'b', text: 'b) Déshabituation.' }, { value: 'c', text: 'c) Habituation.' }, { value: 'd', text: 'd) Conditionnement.' } ], correctAnswers: ['c'], referenceCours: "[APP201-24-48.pdf]: Page 4 / Source 5", referenceText: "Habituation: baisse de l'intensité d'une réponse provoquée par un stimulus particulier à la\nsuite de la présentation répétée de ce stimulus."
+      },
+      {
+        id: 'q10', text: "Qu'est-ce qu'un stimulus inconditionnel (SI) ?", options: [ { value: 'a', text: 'a) Un stimulus qui ne provoque aucune réponse au départ.' }, { value: 'b', text: 'b) Un stimulus qui provoque une réponse seulement après apprentissage.' }, { value: 'c', text: 'c) Un stimulus qui provoque une réponse inconditionnelle sans apprentissage préalable.' }, { value: 'd', text: 'd) Une réponse qui ne dépend d\'aucun apprentissage.' } ], correctAnswers: ['c'], referenceCours: "[APP201-24-48.pdf]: Page 3 / Source 3", referenceText: "stimulus inconditionnel: le stimulus qui provoque une réponse inconditionnelle"
+      },
+      {
+         id: 'q11', text: "La déshabituation se produit lorsque :", options: [ { value: 'a', text: 'a) La réponse à un stimulus diminue progressivement.' }, { value: 'b', text: 'b) Un stimulus initialement neutre finit par déclencher une réponse.' }, { value: 'c', text: 'c) La présentation d\'un nouveau stimulus restaure la réponse à un stimulus précédemment habitué.' }, { value: 'd', text: 'd) Le seuil de déclenchement d\'une réponse augmente.' } ], correctAnswers: ['c'], referenceCours: "[APP201-24-48.pdf]: Page 6-7 / Source 13 & 14", referenceText: "Présentation d'un nouveau stimulus restore\nla réponse initiale au 1er stimulus :\ndéshabituation (Source 13) ... déshabituation: réactivation de la réaction au stimulus S1 après habituation\net introduction d'un stimulus S2 (Source 14)"
+       },
+       {
+         id: 'q12', text: "Laquelle de ces situations est un exemple de sensibilisation ?", options: [ { value: 'a', text: 'a) Ne plus sursauter au bruit du train qui passe près de chez soi.' }, { value: 'b', text: 'b) Après une journée stressante, une petite remarque déclenche une forte réaction émotionnelle.' }, { value: 'c', text: 'c) Ignorer le tic-tac d\'une horloge après un certain temps.' }, { value: 'd', text: 'd) Saliver en entendant la cloche qui annonce le repas (pour un chien conditionné).' } ], correctAnswers: ['b'], referenceCours: "[APP201-24-48.pdf]: Page 8 / Source 17", referenceText: "Ex: journée stressante et le soir une simple petite remarque peut déclencher une réponse forte"
+       },
+       {
+         id: 'q13', text: "Pourquoi l'habituation est-elle considérée comme une forme d'apprentissage ?", options: [ { value: 'a', text: 'a) Parce qu\'elle implique une association entre deux stimuli.' }, { value: 'b', text: 'b) Parce qu\'elle résulte d\'une fatigue musculaire.' }, { value: 'c', text: 'c) Parce que l\'organisme apprend à ignorer des stimuli répétitifs non pertinents ou non dangereux.' }, { value: 'd', text: 'd) Parce qu\'elle est toujours permanente et irréversible.' } ], correctAnswers: ['c'], referenceCours: "[APP201-24-48.pdf]: Page 11 / Source 25", referenceText: "L'habituation : apprentissage par diminution de la réponse face à un stimulus répétitif et non-\nmenaçant\n• C'est une forme d'apprentissage parce que l'organisme \"apprend\" à ignorer les informations inutiles ou non dangereuses."
+       },
+       {
+         id: 'q14', text: "Dans l'expérience originale de Pavlov, quel était le stimulus neutre (SN) avant le conditionnement ?", options: [ { value: 'a', text: 'a) La nourriture.' }, { value: 'b', text: 'b) La salivation.' }, { value: 'c', text: 'c) La clochette.' }, { value: 'd', text: 'd) La peur.' } ], correctAnswers: ['c'], referenceCours: "[APP201-24-48.pdf]: Page 13 / Source 30", referenceText: "2. Clochette = stimulus neutre\nSN≠ RI"
+       },
+       {
+         id: 'q15', text: "Qu'est-ce qu'un conditionnement de 2ème ordre ?", options: [ { value: 'a', text: 'a) Associer directement un stimulus neutre (SN) avec un stimulus inconditionnel (SI).' }, { value: 'b', text: 'b) Associer un nouveau stimulus neutre (SN2) avec un stimulus conditionnel (SC) déjà établi.' }, { value: 'c', text: 'c) Présenter le stimulus inconditionnel (SI) avant le stimulus conditionnel (SC).' }, { value: 'd', text: 'd) La disparition progressive de la réponse conditionnée (RC).' } ], correctAnswers: ['b'], referenceCours: "[APP201-24-48.pdf]: Page 14 / Source 31", referenceText: "Conditionnement de 2ème ordre\nLumière + cloche\nsalivation\nLumière → salivation\nSN2+SC→ RC \nSC2→ RC \nLumière (SC2) jamais présentée avec SI (nourriture)"
+       },
+       {
+         id: 'q16', text: "Dans l'expérience du petit Albert par Watson, quel est devenu le stimulus conditionnel (SC) ?", options: [ { value: 'a', text: 'a) Le bruit fort.' }, { value: 'b', text: 'b) La peur (pleurs).' }, { value: 'c', text: 'c) John B. Watson.' }, { value: 'd', text: 'd) Le rat blanc.' } ], correctAnswers: ['d'], referenceCours: "[APP201-24-48.pdf]: Page 15 / Source 33", referenceText: "Conditionnement : rat blanc (SC) + bruits fort (SI) =RI (peur et pleurs)\nRat blanc = peur et pleurs SC → RC"
+       },
+       {
+         id: 'q17', text: "Quel type de relation temporelle entre SC et SI est généralement considéré comme le moins efficace pour établir un conditionnement classique ?", options: [ { value: 'a', text: 'a) Le conditionnement différé.' }, { value: 'b', text: 'b) Le conditionnement de trace.' }, { value: 'c', text: 'c) Le conditionnement rétroactif (SI avant SC).' }, { value: 'd', text: 'd) Le conditionnement simultané.' } ], correctAnswers: ['c'], referenceCours: "[APP201-24-48.pdf]: Page 16 / Source 36", referenceText: "3. Le conditionnement rétroactif (backward conditioning), où le Sl précède le SC et s'interrompt\npour laisser place à celui-ci." // Moins efficace car SI arrive avant SN/SC
+       },
+       {
+         id: 'q18', text: "Qu'est-ce que l'effet de blocage (Kamin, 1969) ?", options: [ { value: 'a', text: 'a) L\'impossibilité d\'apprendre par conditionnement classique.' }, { value: 'b', text: 'b) Le fait qu\'un premier conditionnement (SC1-SI) empêche ou réduit le conditionnement d\'un second stimulus (SC2) présenté en même temps que le premier (SC1+SC2 - SI).' }, { value: 'c', text: 'c) La généralisation de la réponse conditionnée à des stimuli similaires.' }, { value: 'd', text: 'd) La résistance à l\'extinction d\'une réponse conditionnée forte.' } ], correctAnswers: ['b'], referenceCours: "[APP201-24-48.pdf]: Page 20 / Source 45 & 48", referenceText: "Groupe expé: Conditionnement phase 1= blocage du conditionnement au son dans phase 2 (Source 48) ... Effet de blocage: Kamin (1969): rats - deux stimuli, une lumière et un son, associés à un choc électrique (Source 45)"
+       },
+       {
+         id: 'q19', text: "L'inhibition latente se réfère à :", options: [ { value: 'a', text: 'a) L\'apprentissage rapide après une seule exposition au SI.' }, { value: 'b', text: 'b) La difficulté à établir un conditionnement classique si le SC a été présenté seul de nombreuses fois auparavant.' }, { value: 'c', text: 'c) La réapparition d\'une réponse conditionnée après une période d\'extinction.' }, { value: 'd', text: 'd) La réponse à des stimuli similaires au SC original.' } ], correctAnswers: ['b'], referenceCours: "[APP201-24-48.pdf]: Page 21 / Source 51 & 52", referenceText: "Inhibition latente (effet de préexposition): affaiblissement d'une RC quand le SC est\npréalablement présenté seul. (Source 51) ... Groupe expérimental = attention portée au SC est réduite car SC a été présenté sans\nconséquence → ignorer un stimulus peu pertinent (contingence faible). (Source 52)"
+       },
+       {
+         id: 'q20', text: "Le contre-conditionnement vise à :", options: [ { value: 'a', text: 'a) Renforcer une réponse conditionnée existante.' }, { value: 'b', text: 'b) Supprimer une réponse conditionnée (RC) en associant le stimulus conditionnel (SC) à un autre stimulus (SI2 ou SC2) provoquant une réponse incompatible.' }, { value: 'c', text: 'c) Tester la capacité de discrimination entre deux stimuli.' }, { value: 'd', text: 'd) Augmenter la généralisation de la réponse.' } ], correctAnswers: ['b'], referenceCours: "[APP201-24-48.pdf]: Page 25 / Source 62", referenceText: "Le contre-conditionnement: supprimer une RC\n• Coupler le SC avec un autre SI2 qui provoque une RI2 incompatible avec RC1\n• Coupler le SC1 avec un autre SC2 qui provoque une autre RC2 incompatible avec RC1"
+       },
+       {
+         id: 'q21', text: 'Selon Thorndike, la "Loi de l\'effet" stipule que :', options: [ { value: 'a', text: 'a) L\'apprentissage se fait par imitation soudaine.' }, { value: 'b', text: 'b) La répétition d\'un comportement renforce l\'association situation-comportement (Loi de l\'exercice).' }, { value: 'c', text: 'c) Une réponse suivie de satisfaction est plus susceptible d\'être reproduite.' }, { value: 'd', text: 'd) Les animaux créent des cartes cognitives de leur environnement.' } ], correctAnswers: ['c'], referenceCours: "[APP201-41-52.pdf]: Page 11 / Source 88", referenceText: "Loi de l'effet: Des différentes réponses produites pour une même situation, celles qui sont accompagnées ou\nsuivies de près par la satisfaction de la volonté de l'animal... auront davantage de\nprobabilités de réapparaître..."
+       },
+       {
+         id: 'q22', text: "Qu'est-ce que l'apprentissage latent, démontré par Tolman & Honzik (1930) avec les rats dans le labyrinthe ?", options: [ { value: 'a', text: 'a) Un apprentissage qui ne se manifeste qu\'en présence d\'une motivation ou d\'une récompense.' }, { value: 'b', text: 'b) Un apprentissage basé sur l\'imitation d\'un modèle.' }, { value: 'c', text: 'c) Un apprentissage par essais et erreurs systématiques.' }, { value: 'd', text: 'd) Un apprentissage par compréhension soudaine (insight).' } ], correctAnswers: ['a'], referenceCours: "[APP201-41-52.pdf]: Page 12 / Source 90 & 91", referenceText: "apprentissage latent (Source 90) ... groupe B a appris pendant les 11 jours à errer sans but dans le labyrinthe = apprentissage latent qui s'exprime avec\nmotivation (Source 91)"
+       },
+       {
+         id: 'q23', text: "L'apprentissage par insight, étudié par Köhler avec les chimpanzés, se caractérise par :", options: [ { value: 'a', text: 'a) Une amélioration progressive par répétition.' }, { value: 'b', text: 'b) La découverte soudaine d\'une solution par restructuration du problème.' }, { value: 'c', text: 'c) L\'association d\'un stimulus neutre à une réponse réflexe.' }, { value: 'd', text: 'd) La nécessité d\'un renforcement externe pour apprendre.' } ], correctAnswers: ['b'], referenceCours: "[APP201-53-79.pdf]: Page 1-2 / Source 92-94", referenceText: "apprentissage par insight (Source 92) ... Insight = saisie cognitive soudaine des relations entre éléments séparés (Source 94)"
+       },
+       {
+         id: 'q24', text: "Dans le conditionnement opérant (Skinner), qu'est-ce qu'un renforcement négatif ?", options: [ { value: 'a', text: 'a) Ajouter un stimulus désagréable pour diminuer un comportement.' }, { value: 'b', text: 'b) Retirer un stimulus agréable pour diminuer un comportement.' }, { value: 'c', text: 'c) Ajouter un stimulus agréable pour augmenter un comportement.' }, { value: 'd', text: 'd) Retirer un stimulus désagréable (aversif) pour augmenter la probabilité d\'un comportement.' } ], correctAnswers: ['d'], referenceCours: "[APP201-53-79.pdf]: Page 7 & 11 / Source 102 & 107", referenceText: "Renforcement négatif: retirer un stimulus pour favoriser le comportement (Source 102) ... [Tableau:] Supprime un stimulus à la situation / Renforce / Stimulus aversif / Procédure de renforcement négatif / Cas #2 (Source 107)"
+       },
+       {
+         id: 'q25', text: "Donner une tâche ménagère supplémentaire à un adolescent qui a utilisé des gros mots est un exemple de :", options: [ { value: 'a', text: 'a) Renforcement positif.' }, { value: 'b', text: 'b) Renforcement négatif.' }, { value: 'c', text: 'c) Punition positive.' }, { value: 'd', text: 'd) Punition négative.' } ], correctAnswers: ['c'], referenceCours: "[APP201-53-79.pdf]: Page 10, 11 & 17 / Source 105, 107, 114", referenceText: "Punition positive : ajouter un stimulus pour diminuer le comportement (Source 105) ... [Tableau:] Ajoute un stimulus à la situation / Affaiblit / Stimulus aversif / Procédure de punition positive / Cas #3 (Source 107) ... L'adolescent utilise des gros mots, le parent lui impose une tâche ménagère (punition positive) (Source 114)"
+       },
+       {
+         id: 'q26', text: "Qu'est-ce qu'un stimulus discriminatif dans le conditionnement opérant ?", options: [ { value: 'a', text: 'a) Un stimulus qui modifie la valeur du renforçateur (comme la faim).' }, { value: 'b', text: 'b) Un stimulus qui signale qu\'une conséquence (renforcement ou punition) est disponible si un comportement est émis.' }, { value: 'c', text: 'c) La conséquence elle-même (nourriture, choc électrique...).' }, { value: 'd', text: 'd) Le comportement qui déclenche la conséquence.' } ], correctAnswers: ['b'], referenceCours: "[APP201-53-79.pdf]: Page 12-13 & 17 / Source 108, 109, 114", referenceText: "Le stimulus discriminatif : signal de la disponibilité d'une conséquence (Source 108, 109) ... Stimulus discriminatif: antécédent qui signale la disponibilité d'une conséquence (Source 114)"
+       },
+       {
+         id: 'q27', text: "Les renforçateurs primaires sont des stimuli qui :", options: [ { value: 'a', text: 'a) Deviennent renforçants par association avec d\'autres renforçateurs (ex: argent).' }, { value: 'b', text: 'b) Ont une capacité à renforcer sans apprentissage antérieur (ex: nourriture, eau).' }, { value: 'c', text: 'c) Sont toujours de nature sociale (ex: attention, félicitations).' }, { value: 'd', text: 'd) Sont utilisés spécifiquement dans les programmes de type ABA.' } ], correctAnswers: ['b'], referenceCours: "[APP201-53-79.pdf]: Page 18 / Source 116", referenceText: "• Primaires: stimuli ayant une capacité à renforcer sans apprentissage antérieur (nourriture, l'eau, le sommeil, la chaleur, l'oxygène, la température de la peau, les stimulations tactiles et visuelles)"
+       },
+       {
+         id: 'q28', text: "Le façonnage (shaping) est une procédure qui consiste à :", options: [ { value: 'a', text: 'a) Renforcer un comportement seulement après un temps fixe.' }, { value: 'b', text: 'b) Enseigner une séquence de comportements en partant du dernier.' }, { value: 'c', text: 'c) Renforcer des approximations successives d\'un comportement cible.' }, { value: 'd', text: 'd) Supprimer la contingence entre une réponse et sa conséquence.' } ], correctAnswers: ['c'], referenceCours: "[APP201-53-79.pdf]: Page 20 / Source 120", referenceText: "Façonnage (shaping): renforcer des approximations de plus en plus satisfaisantes de l'opérant"
+       },
+       {
+         id: 'q29', text: "Un programme de renforcement à ratio variable (RV) signifie que :", options: [ { value: 'a', text: 'a) La récompense est donnée après un nombre fixe de réponses.' }, { value: 'b', text: 'b) La récompense est donnée pour la première réponse après un temps fixe.' }, { value: 'c', text: 'c) La récompense est donnée après un nombre de réponses qui varie aléatoirement autour d\'une moyenne.' }, { value: 'd', text: 'd) La récompense est donnée pour la première réponse après un temps variable.' } ], correctAnswers: ['c'], referenceCours: "[APP201-53-79.pdf]: Page 21 / Source 122", referenceText: "• Ratio variable (RVn): le nombre de réponses nécessaires pour l'obtention d'une récompense varie de manière\naléatoire autour d'une moyenne (n)"
+       },
+       {
+         id: 'q30', text: "Selon la théorie de l'apprentissage social de Bandura, l'apprentissage vicariant signifie :", options: [ { value: 'a', text: 'a) Apprendre uniquement par essais et erreurs personnels.' }, { value: 'b', text: 'b) Apprendre par association de stimuli.' }, { value: 'c', text: 'c) Apprendre en observant les actions des autres et leurs conséquences.' }, { value: 'd', text: 'd) Apprendre grâce à la maturation du système nerveux.' } ], correctAnswers: ['c'], referenceCours: "[APP201-53-79.pdf]: Page 24 / Source 127", referenceText: "Apprentissage vicariant: acquisition de connaissances peut être directement liée à\nl'observation d'autrui dans le cadre des interactions sociales, des expériences"
+       },
+       {
+         id: 'q31', text: "Dans l'expérience de la poupée Bobo (version 1965), quel groupe d'enfants a montré le moins de comportements agressifs envers la poupée ?", options: [ { value: 'a', text: 'a) Le groupe où l\'adulte agressif était récompensé.' }, { value: 'b', text: 'b) Le groupe où l\'adulte agressif était réprimandé (puni).' }, { value: 'c', text: 'c) Le groupe où l\'adulte agressif n\'avait pas de conséquences.' }, { value: 'd', text: 'd) Le groupe contrôle sans modèle adulte.' } ], correctAnswers: ['b'], referenceCours: "[APP201-53-79.pdf]: Page 26 / Source 132 & 134", referenceText: "G2: L'adulte maltraite la poupée bobo et est réprimandé pour son comportement (Source 132) ... G2: pas de reproduction du comportement agressif (Source 134)"
+       },
+       {
+         id: 'q32', text: "Le renforcement vicariant se produit quand :", options: [ { value: 'a', text: 'a) Un individu est directement récompensé pour son comportement.' }, { value: 'b', text: 'b) L\'observation des renforcements obtenus par un modèle influence le comportement de l\'observateur.' }, { value: 'c', text: 'c) Un comportement diminue car le modèle est puni.' }, { value: 'd', text: 'd) L\'apprentissage se fait sans aucune forme de renforcement.' } ], correctAnswers: ['b'], referenceCours: "[APP201-53-79.pdf]: Page 24 & 27 / Source 127 & 135", referenceText: "Renforcement vicariant: les renforcements obtenus par autrui sont source d'apprentissage\npour soi (on s'attend aux mêmes renforcements pour les mêmes comportements) (Source 127) ... Renforcement\nvicariant (Source 135, diagramme)"
+       },
+       {
+         id: 'q33', text: "Quelle caractéristique principale distingue l'apprentissage de la maturation, selon les documents ?", options: [ { value: 'a', text: 'a) La maturation est temporaire, l\'apprentissage est permanent.' }, { value: 'b', text: 'b) L\'apprentissage est uniquement lié aux gènes, la maturation à l\'environnement.' }, { value: 'c', text: 'c) La maturation ne concerne que les changements physiques.' }, { value: 'd', text: 'd) L\'apprentissage résulte de l\'expérience/contact avec l\'environnement, tandis que la maturation suit un plan biologique plus prédéfini (même si influencé par l\'environnement).' } ], correctAnswers: ['d'], referenceCours: "[APP201 - Cours 1 - définitions.pdf]: Page 6 & 12 / Source 144 & 158-160", referenceText: "l'apprentissage ... dû à des types particuliers d'expériences (Lieberman, 2000) (Source 144) ... Changements durables: maturation, croissance physique (Source 159) ... Interaction apprentissage, maturation et motivation (Source 160)" // Distinction entre apprentissage (expérience) et maturation (biologique)
+       },
+       {
+         id: 'q34', text: "Lequel de ces aspects est une critique faite au concept de comportement uniquement observable (béhaviorisme strict) ?", options: [ { value: 'a', text: 'a) L\'existence d\'apprentissages non-observables ou silencieux (ex: langage interne).' }, { value: 'b', text: 'b) Le fait que tous les comportements sont innés.' }, { value: 'c', text: 'c) L\'inutilité de décrire la fonction d\'un comportement.' }, { value: 'd', text: 'd) Le manque de méthode expérimentale.' } ], correctAnswers: ['a'], referenceCours: "[APP201 - Cours 1 - définitions.pdf]: Page 15 / Source 167", referenceText: "apprentissage non-observable ou silencieux (p.ex. langage interne)"
+       },
+       {
+         id: 'q35', text: "Quelle école de psychologie, apparue en 1879 avec Wundt, utilisait principalement l'introspection pour étudier la structure de la conscience (sensations, perceptions) ?", options: [ { value: 'a', text: 'a) Le Structuralisme.' }, { value: 'b', text: 'b) Le Fonctionnalisme.' }, { value: 'c', text: 'c) Le Béhaviorisme.' }, { value: 'd', text: 'd) Le Cognitivisme.' } ], correctAnswers: ['a'], referenceCours: "[APP201 - Cours 1 - définitions.pdf]: Page 23 / Source 184", referenceText: "1879 Structuralisme\nWilhem Wundt - psychophysique,\nperception sensation\nMéthode introspection"
+       },
+       {
+         id: 'q36', text: "Lequel de ces courants psychologiques (Pavlov, Watson, Skinner) rejetait l'étude des processus mentaux internes pour se concentrer sur les relations observables stimulus-réponse ?", options: [ { value: 'a', text: 'a) Le Structuralisme.' }, { value: 'b', text: 'b) Le Fonctionnalisme.' }, { value: 'c', text: 'c) Le Béhaviorisme.' }, { value: 'd', text: 'd) Le Cognitivisme.' } ], correctAnswers: ['c'], referenceCours: "[APP201 - Cours 1 - définitions.pdf]: Page 23 / Source 184", referenceText: "1920-Behaviorisme\nPavlov, Watson, Skinner\nrejet structuralisme et distinction du\nfonctionnalisme par ses objets\nMéthode expérimentation"
+       },
+       {
+         id: 'q37', text: "Quel courant, réconciliant en partie les approches précédentes et représenté par Bandura, réintroduit l'étude des processus cognitifs (pensée, mémoire) dans l'explication du comportement et de l'apprentissage ?", options: [ { value: 'a', text: 'a) Le Structuralisme.' }, { value: 'b', text: 'b) Le Fonctionnalisme.' }, { value: 'c', text: 'c) Le Béhaviorisme.' }, { value: 'd', text: 'd) Le Cognitivisme (et le cognitivisme social).' } ], correctAnswers: ['d'], referenceCours: "[APP201 - Cours 1 - définitions.pdf]: Page 23 / Source 184 & [APP201-53-79.pdf]: Page 24", referenceText: "1950-Cognitivisme\nBandura - cognitivisme social\nréconciliation des écoles (Source 184) ... Théorie de l'apprentissage social ou théorie sociale cognitive (Albert bandura) Théorie béhavioriste + modélisation cognitive..." // Combine les deux sources pour le lien cognitivisme/Bandura
+       },
+       {
+         id: 'q38', text: "Quelle analogie est faite dans le cours entre l'évolution darwinienne et l'apprentissage ?", options: [ { value: 'a', text: 'a) Les deux sont des processus totalement aléatoires.' }, { value: 'b', text: 'b) Les deux impliquent variation, sélection par l\'environnement (survie/renforcement), et rétention (transmission génétique/mémoire).' }, { value: 'c', text: 'c) L\'apprentissage est une forme de régression évolutive.' }, { value: 'd', text: 'd) Seule l\'évolution implique une adaptation à l\'environnement.' } ], correctAnswers: ['b'], referenceCours: "[APP201 - Cours 1 - définitions.pdf]: Page 14 / Source 162-166", referenceText: "•la variation du comportement; (Source 164) ⚫la sélection de cette variation par l'environnement (au travers de renforcements, conditionnement opérant); (Source 165) ⚫la rétention de ce nouveau comportement par des mécanismes neurobiologiques. (Source 166)" // Par analogie avec les étapes 1,2,3 de l'évolution
+       },
+       {
+         id: 'q39', text: "Quelle est la différence fondamentale entre l'habituation et la sensibilisation ?", options: [ { value: 'a', text: 'a) L\'habituation concerne les stimuli agréables, la sensibilisation les stimuli désagréables.' }, { value: 'b', text: 'b) L\'habituation est un apprentissage associatif, la sensibilisation est non-associative.' }, { value: 'c', text: 'c) L\'habituation est une diminution de la réponse à un stimulus répété, la sensibilisation est une augmentation de la réactivité (ou baisse du seuil de réponse).' }, { value: 'd', text: 'd) L\'habituation ne se produit que chez les humains, la sensibilisation chez les animaux.' } ], correctAnswers: ['c'], referenceCours: "[APP201-24-48.pdf]: Page 4, 8, 11 / Source 5, 15, 27", referenceText: "Habituation: baisse de l'intensité d'une réponse... (Source 5) Sensibilisation: baisse du seuil absolu de déclenchement d'une réponse... (Source 15) ...habituation vs. sensibilisation... (Source 27)"
+       },
+       {
+         id: 'q40', text: "Dans le conditionnement classique, lorsque le SC est présenté avant le SI et s'interrompt avant le début du SI, laissant un intervalle vide, on parle de :", options: [ { value: 'a', text: 'a) Conditionnement de trace.' }, { value: 'b', text: 'b) Conditionnement différé.' }, { value: 'c', text: 'c) Conditionnement simultané.' }, { value: 'd', text: 'd) Conditionnement rétroactif.' } ], correctAnswers: ['a'], referenceCours: "[APP201-24-48.pdf]: Page 16 / Source 35 & 36", referenceText: "2. Le conditionnement de trace (trace conditioning), où le SC précède le Sl et s'interrompt pour\nlaisser place au SI. (Source 35) L'intervalle de temps entre la fin du SC et le Sl est appelé le gap interval\n(intervalle vide)... (Source 36)"
+       },
+       {
+         id: 'q41', text: "Si le SC et le SI commencent et se terminent exactement en même temps, quel type de conditionnement classique est-ce ?", options: [ { value: 'a', text: 'a) Conditionnement de trace.' }, { value: 'b', text: 'b) Conditionnement différé.' }, { value: 'c', text: 'c) Conditionnement rétroactif.' }, { value: 'd', text: 'd) Conditionnement simultané.' } ], correctAnswers: ['d'], referenceCours: "[APP201-24-48.pdf]: Page 16 / Source 37", referenceText: "4. Le conditionnement simultané (simultaneous conditioning), où le SC et le Sl commencent et se\nterminent en même temps"
+       },
+       {
+         id: 'q42', text: "La contingence dans le conditionnement classique fait référence à :", options: [ { value: 'a', text: 'a) L\'intensité du stimulus inconditionnel (SI).' }, { value: 'b', text: 'b) La mesure dans laquelle le SC prédit de manière fiable l\'apparition (ou non-apparition) du SI.' }, { value: 'c', text: 'c) Le nombre d\'appariements entre le SC et le SI.' }, { value: 'd', text: 'd) La durée de la réponse conditionnée (RC).' } ], correctAnswers: ['b'], referenceCours: "[APP201-24-48.pdf]: Page 19 / Source 43 & 44", referenceText: "relation d'information entre le SC et le SI: le SC est-il informatif du SI? (Source 43) La contingence: contingence SI/SC est définie par deux probabilités... Conditionnement RC d'autant plus efficace que contingence =+1→ SC prédit SI (Source 44)"
+       },
+       {
+         id: 'q43', text: "Quel lien est suggéré dans le cours entre l'inhibition latente et la schizophrénie ?", options: [ { value: 'a', text: 'a) Un déficit de l\'inhibition latente (difficulté à ignorer les stimuli non pertinents) serait observé chez certains patients.' }, { value: 'b', text: 'b) Une inhibition latente excessive serait la cause principale de la schizophrénie.' }, { value: 'c', text: 'c) L\'inhibition latente permettrait de traiter la schizophrénie.' }, { value: 'd', text: 'd) Il n\'y a aucun lien mentionné entre inhibition latente et schizophrénie.' } ], correctAnswers: ['a'], referenceCours: "[APP201-24-48.pdf]: Page 21 / Source 53", referenceText: "Phénomène présent dans la schizophrénie? inhibition latente déficitaire chez les sujets\nschizophrènes en phase aiguë (Swerdlow et al., 1996) = difficulté à ignorer des stimuli non\npertinents"
+       },
+       {
+         id: 'q44', text: "Comment l'extinction dans le conditionnement classique diffère-t-elle de l'habituation ?", options: [ { value: 'a', text: 'a) L\'extinction est une augmentation de la réponse, l\'habituation une diminution.' }, { value: 'b', text: 'b) L\'extinction ne concerne que le conditionnement opérant.' }, { value: 'c', text: 'c) L\'extinction concerne la disparition d\'une réponse conditionnée (apprise par association), tandis que l\'habituation concerne la diminution d\'une réponse innée/inconditionnelle.' }, { value: 'd', text: 'd) L\'habituation nécessite la présentation d\'un nouveau stimulus, pas l\'extinction.' } ], correctAnswers: ['c'], referenceCours: "[APP201-24-48.pdf]: Page 22 / Source 54", referenceText: "≠ habituation liée à réponses innées\nExtinction liée à réponses conditionnées"
+       },
+       {
+         id: 'q45', text: "Qu'est-ce que la récupération spontanée dans le contexte du conditionnement classique ?", options: [ { value: 'a', text: 'a) La capacité d\'un organisme à résister à l\'extinction.' }, { value: 'b', text: 'b) La réapparition d\'une réponse conditionnée après une période d\'extinction, sans nouvel appariement SC-SI (souvent plus faible).' }, { value: 'c', text: 'c) L\'apprentissage d\'une nouvelle réponse incompatible.' }, { value: 'd', text: 'd) La généralisation de la réponse à d\'autres stimuli.' } ], correctAnswers: ['b'], referenceCours: "[APP201-24-48.pdf]: Page 22 / Source 54", referenceText: "Récupération spontanée\n après extinction, couplage SC+SI alors RC réapparaît beaucoup plus vite que pendant 1er\nconditionnement"
+       },
+       {
+         id: 'q46', text: "La généralisation dans le conditionnement classique signifie que :", options: [ { value: 'a', text: 'a) Une réponse conditionnée à un SC peut aussi être déclenchée par des stimuli similaires au SC original.' }, { value: 'b', text: 'b) L\'organisme ne répond qu\'au SC exact et ignore tous les autres stimuli.' }, { value: 'c', text: 'c) La réponse conditionnée disparaît progressivement.' }, { value: 'd', text: 'd) L\'organisme apprend à distinguer deux stimuli très proches.' } ], correctAnswers: ['a'], referenceCours: "[APP201-24-48.pdf]: Page 23 / Source 55", referenceText: "généralisation: l'association SC-SI encode la totalité des caractéristiques de la situation\n... Présentation d'un son de même fréquence mais intensité et durée différentes peut provoquer la RC\n Présentation d'un son de fréquence différente mais intensité et durée identiques peut provoquer la RC"
+       },
+       {
+         id: 'q47', text: "L'entraînement à la discrimination dans le conditionnement classique implique :", options: [ { value: 'a', text: 'a) De présenter uniquement le SC suivi du SI.' }, { value: 'b', text: 'b) De présenter des stimuli très différents du SC.' }, { value: 'c', text: 'c) De renforcer la réponse à tous les stimuli similaires au SC.' }, { value: 'd', text: 'd) De présenter un stimulus (SC+) suivi du SI, et un stimulus similaire (SC-) sans le SI, pour que l\'organisme apprenne à ne répondre qu\'au SC+.' } ], correctAnswers: ['d'], referenceCours: "[APP201-24-48.pdf]: Page 24 / Source 61", referenceText: "Entrainement à la discrimination: (Pavlov)\n• 50% essais: SC1 (1000Hz) + Sl\n• 50% essais: SC2 (900Hz) sans Sl\n• Au début SC+ et SC- =RC \n• Mais au fur et à mesure seul SC+ =RC \nSC1=SC+ car associé à SI\nSC2=SC- car pas associé à SI"
+       },
+       {
+         id: 'q48', text: 'L\'apprentissage par essais et erreurs, étudié par Thorndike avec sa "boîte à problème", est caractérisé par :', options: [ { value: 'a', text: 'a) Une compréhension soudaine de la solution.' }, { value: 'b', text: 'b) L\'imitation du comportement d\'un autre individu.' }, { value: 'c', text: 'c) L\'exploration de différentes réponses jusqu\'à trouver celle qui produit l\'effet désiré (satisfaction).' }, { value: 'd', text: 'd) L\'association passive de deux stimuli environnementaux.' } ], correctAnswers: ['c'], referenceCours: "[APP201-41-52.pdf]: Page 10 / Source 86 & 87", referenceText: "Apprentissage par essais-erreurs (Source 86) • Chat affamé dans la boite qui va par essais-erreurs réussir à actionner le système et sortir de la boite\npour accéder à la nourriture (Source 87)"
+       },
+       {
+         id: 'q49', text: 'Que stipule la "Loi de l\'exercice" de Thorndike ?', options: [ { value: 'a', text: 'a) Une réponse suivie de satisfaction sera renforcée.' }, { value: 'b', text: 'b) Plus un comportement est répété dans une situation donnée, plus l\'association entre la situation et le comportement est renforcée.' }, { value: 'c', text: 'c) L\'apprentissage peut se produire sans récompense explicite.' }, { value: 'd', text: 'd) L\'exercice physique améliore la mémoire.' } ], correctAnswers: ['b'], referenceCours: "[APP201-41-52.pdf]: Page 11 / Source 89", referenceText: "Loi de l'exercice: plus un sujet se comporte d'une certaine façon dans une situation donnée, plus l'association\nentre cette situation et ce comportement sera renforcée\n→ les connexions entre une situation et la réponse sont augmentées par l'exercice et diminuées lorsque l'exercice est arrêté"
+       },
+       {
+         id: 'q50', text: "Lequel de ces chercheurs est principalement associé à l'étude du conditionnement classique chez le chien (salivation) ?", options: [ { value: 'a', text: 'a) Pavlov.' }, { value: 'b', text: 'b) Skinner.' }, { value: 'c', text: 'c) Thorndike.' }, { value: 'd', text: 'd) Tolman.' } ], correctAnswers: ['a'], referenceCours: "[APP201-24-48.pdf]: Page 13 / Source 30", referenceText: "Pavlov, physiologiste russe... 1927: conditionnement salivaire du chien"
+       },
+       {
+         id: 'q51', text: "Quelles sont les deux principales formes d'apprentissage non-associatif décrites dans le cours ?", options: [ { value: 'a', text: 'a) Habituation' }, { value: 'b', text: 'b) Conditionnement classique' }, { value: 'c', text: 'c) Sensibilisation' }, { value: 'd', text: 'd) Conditionnement opérant' } ], correctAnswers: ['a', 'c'], referenceCours: "[APP201-24-48.pdf]: Page 2", referenceText: "Apprentissage non-\nassociatif\nHABITUATION, DÉSHABITUATION, SENSIBILISATION"
+       },
+       {
+         id: 'q52', text: "Selon Thorndike, quelles sont les deux lois principales régissant l'apprentissage par essais-erreurs ?", options: [ { value: 'a', text: 'a) Loi de l\'effet' }, { value: 'b', text: 'b) Loi de la contingence' }, { value: 'c', text: 'c) Loi de la généralisation' }, { value: 'd', text: 'd) Loi de l\'exercice' } ], correctAnswers: ['a', 'd'], referenceCours: "[APP201-41-52.pdf]: Page 11 / Source 88 & 89", referenceText: "Loi de l'effet... (Source 88) Loi de l'exercice... (Source 89)"
+       },
+       {
+         id: 'q53', text: "Quels types de conséquences visent à AUGMENTER la probabilité d'apparition d'un comportement dans le conditionnement opérant ?", options: [ { value: 'a', text: 'a) Punition positive' }, { value: 'b', text: 'b) Renforcement positif' }, { value: 'c', text: 'c) Renforcement négatif' }, { value: 'd', text: 'd) Punition négative' } ], correctAnswers: ['b', 'c'], referenceCours: "[APP201-53-79.pdf]: Page 7 & 11 / Source 102 & 107", referenceText: "Renforcer = augmenter le comportement\nRenforcement positif : ajouter un stimulus pour favoriser le comportement\nRenforcement négatif: retirer un stimulus pour favoriser le comportement (Source 102) ... [Tableau:] Renforce (Source 107)"
+       },
+       {
+         id: 'q54', text: "Quels types de conséquences visent à DIMINUER la probabilité d'apparition d'un comportement dans le conditionnement opérant ?", options: [ { value: 'a', text: 'a) Punition positive' }, { value: 'b', text: 'b) Renforcement positif' }, { value: 'c', text: 'c) Renforcement négatif' }, { value: 'd', text: 'd) Punition négative' } ], correctAnswers: ['a', 'd'], referenceCours: "[APP201-53-79.pdf]: Page 10 & 11 / Source 105 & 107", referenceText: "Punir = diminuer le comportement\nPunition positive : ajouter un stimulus pour diminuer le comportement\nPunition négative: retirer un stimulus pour diminuer le comportement (Source 105) ... [Tableau:] Affaiblit (Source 107)"
+       },
+       {
+         id: 'q55', text: "Dans le conditionnement opérant, quels éléments sont considérés comme des ANTÉCÉDENTS du comportement ?", options: [ { value: 'a', text: 'a) Le stimulus discriminatif' }, { value: 'b', text: 'b) Le renforcement positif' }, { value: 'c', text: 'c) La condition de motivation (ex: faim, satiété)' }, { value: 'd', text: 'd) La punition négative' } ], correctAnswers: ['a', 'c'], referenceCours: "[APP201-53-79.pdf]: Page 12-17 / Source 108-114", referenceText: "Les antécédents des comportements: les événements/stimuli qui se produisent avant le\ncomportement... Le stimulus discriminatif... (Source 108) La condition de motivation... (Source 110) Stimulus discriminatif: antécédent... Condition de motivation: antécédent... (Source 114)"
+       },
+       {
+         id: 'q56', text: "Quels sont les deux types de programmes de renforcement basés sur le TEMPS écoulé depuis la dernière récompense ?", options: [ { value: 'a', text: 'a) Ratio fixe (RF)' }, { value: 'b', text: 'b) Intervalle fixe (IF)' }, { value: 'c', text: 'c) Ratio variable (RV)' }, { value: 'd', text: 'd) Intervalle variable (IV)' } ], correctAnswers: ['b', 'd'], referenceCours: "[APP201-53-79.pdf]: Page 21 / Source 122-123", referenceText: "Programme à intervalles:\n Intervalle fixe (IFn): récompense délivrée dès réponse émise mais après un intervalle de (n) secondes... (Source 123) • Intervalle variable (IVn): récompense délivrée dès réponse émise après un intervalle variable..."
+       },
+       {
+         id: 'q57', text: "Quels sont les deux types de programmes de renforcement basés sur le NOMBRE de réponses émises ?", options: [ { value: 'a', text: 'a) Ratio fixe (RF)' }, { value: 'b', text: 'b) Intervalle fixe (IF)' }, { value: 'c', text: 'c) Ratio variable (RV)' }, { value: 'd', text: 'd) Intervalle variable (IV)' } ], correctAnswers: ['a', 'c'], referenceCours: "[APP201-53-79.pdf]: Page 21 / Source 122", referenceText: "Programme à ratio:\n• Ratio fixe (RFn): récompense délivrée après un nombre fixe (n) de réponses\n• Ratio variable (RVn): le nombre de réponses nécessaires... varie..."
+       },
+       {
+         id: 'q58', text: "Quels phénomènes peuvent survenir APRÈS une procédure d'extinction dans le conditionnement classique ?", options: [ { value: 'a', text: 'a) L\'effet de blocage' }, { value: 'b', text: 'b) La récupération spontanée' }, { value: 'c', text: 'c) L\'inhibition latente' }, { value: 'd', text: 'd) Une réacquisition plus rapide si l\'appariement SC-SI reprend' } ], correctAnswers: ['b', 'd'], referenceCours: "[APP201-24-48.pdf]: Page 22 / Source 54", referenceText: "Récupération spontanée\n après extinction, couplage SC+SI alors RC réapparaît beaucoup plus vite que pendant 1er\nconditionnement"
+       },
+       {
+         id: 'q59', text: "Quels chercheurs sont principalement associés à l'étude de l'apprentissage par essais-erreurs et à l'apprentissage latent respectivement ?", options: [ { value: 'a', text: 'a) Thorndike (essais-erreurs)' }, { value: 'b', text: 'b) Pavlov (latent)' }, { value: 'c', text: 'c) Tolman (latent)' }, { value: 'd', text: 'd) Skinner (essais-erreurs)' } ], correctAnswers: ['a', 'c'], referenceCours: "[APP201-41-52.pdf]: Page 10 & 12 / Source 86 & 90", referenceText: "Apprentissage par essais-erreurs\nEdward Lee Thorndike... (Source 86) apprentissage latent\nTolman & Honznik (1930)... (Source 90)"
+       },
+       {
+         id: 'q60', text: "L'apprentissage social (Bandura) met en avant quels concepts clés ?", options: [ { value: 'a', text: 'a) La loi de l\'effet' }, { value: 'b', text: 'b) L\'apprentissage vicariant (par observation)' }, { value: 'c', text: 'c) Le conditionnement de trace' }, { value: 'd', text: 'd) Le renforcement vicariant' } ], correctAnswers: ['b', 'd'], referenceCours: "[APP201-53-79.pdf]: Page 24 / Source 127", referenceText: "Théorie de l'apprentissage social ou théorie sociale cognitive (Albert bandura)\n... Apprentissage vicariant... Renforcement vicariant..."
+       },
+       {
+         id: 'q61', text: "Quels sont les trois niveaux d'analyse complémentaires de l'apprentissage mentionnés par Domjan (2000) ?", options: [ { value: 'a', text: 'a) L\'ensemble de l\'organisme (comportements observables ou non)' }, { value: 'b', text: 'b) Les circuits neuronaux et neurotransmetteurs' }, { value: 'c', text: 'c) Les neurones (aspects moléculaires et cellulaires)' }, { value: 'd', text: 'd) Le contexte social et culturel uniquement' } ], correctAnswers: ['a', 'b', 'c'], referenceCours: "[APP201 - Cours 1 - définitions.pdf]: Page 15 / Source 167-168", referenceText: "Différents niveaux d'analyse complémentaire (Domjan, 2000) :\n• l'ensemble de l'organisme: comportements observables (ou non) (Source 167) • les circuits neuronaux et les neurotransmetteurs : les réseaux de neurones.\n• les neurones: les aspects moléculaires et cellulaires. (Source 168)"
+       },
+       {
+         id: 'q62', text: 'Parmi les 4 causes/explications des comportements selon Tinbergen, lesquelles sont citées dans l\'exemple "Pourquoi dort-on (la nuit)" ?', options: [ { value: 'a', text: 'a) Cause proximale (mécanismes biologiques immédiats)' }, { value: 'b', text: 'b) Cause fonctionnelle (utilité adaptative)' }, { value: 'c', text: 'c) Cause historique (événements passés spécifiques à l\'individu)' }, { value: 'd', text: 'd) Cause ontogénétique (développement au cours de la vie)' } ], correctAnswers: ['a', 'b', 'd'], referenceCours: "[APP201 - Cours 1 - définitions.pdf]: Page 10 / Source 153, 155, 156", referenceText: "Cause proximale... (Source 153) Cause fonctionnelle... (Source 155) Cause ontogénétique... (Source 156)" // Exclut phylogénétique (Source 154) qui n'est pas dans les options correctes. Option C est inventée.
+       },
+       {
+         id: 'q63', text: "Quels éléments sont essentiels dans la définition du conditionnement classique de Pavlov ?", options: [ { value: 'a', text: 'a) Un stimulus inconditionnel (SI) qui déclenche une réponse inconditionnelle (RI).' }, { value: 'b', text: 'b) Un stimulus neutre (SN) qui, après association avec le SI, devient un stimulus conditionnel (SC).' }, { value: 'c', text: 'c) Une conséquence (récompense ou punition) qui suit le comportement.' }, { value: 'd', text: 'd) Une réponse conditionnelle (RC) déclenchée par le SC après apprentissage.' } ], correctAnswers: ['a', 'b', 'd'], referenceCours: "[APP201-24-48.pdf]: Page 13 / Source 30", referenceText: "1. Nourriture = stimulus inconditionnel\n Salivation = réponse inconditionnelle\n SI→ RI \n2. Clochette = stimulus neutre\n SN≠ RI \n3. Clochette puis nourriture x 6\n SC+SI→ RI \n4. Clochette = stimulus conditionnel\n Salivation = réponse conditionnelle\n SC→ RC"
+       },
+       {
+         id: 'q64', text: "Quels facteurs peuvent influencer la force ou la rapidité du conditionnement classique ?", options: [ { value: 'a', text: 'a) Le nombre d\'appariements SC-SI.' }, { value: 'b', text: 'b) L\'âge de l\'organisme uniquement.' }, { value: 'c', text: 'c) L\'intensité du stimulus inconditionnel (SI).' }, { value: 'd', text: 'd) La relation temporelle et la contingence entre SC et SI.' } ], correctAnswers: ['a', 'c', 'd'], referenceCours: "[APP201-24-48.pdf]: Page 16-19 / Source 34-44", referenceText: "relation temporelle... (Source 34) Nombre d'appariements... (Source 41) Intensité du Sl... (Source 42) relation d'information... (contingence...) (Source 43)"
+       },
+       {
+         id: 'q65', text: "Quels sont les processus impliqués dans l'apprentissage vicariant selon le modèle de Bandura présenté ?", options: [ { value: 'a', text: 'a) Processus attentionnels (observer le modèle).' }, { value: 'b', text: 'b) Processus de rétention (mémoriser ce qui a été observé).' }, { value: 'c', text: 'c) Processus de conditionnement classique direct.' }, { value: 'd', text: 'd) Processus de reproduction motrice et motivationnels.' } ], correctAnswers: ['a', 'b', 'd'], referenceCours: "[APP201-53-79.pdf]: Page 27 / Source 135", referenceText: "PROCESSUS ΑΤΤΕΝΤΙΟΝ-NELS ... PROCESSUS DE RETENTION ... PROCESSUS DE REPRODUCTION MOTRICE ... PROCESSUS MOTIVATIONNELS" // Liste les 4 processus dans le diagramme.
+       },
+       {
+         id: 'q66', text: "Quels types de renforçateurs secondaires (ou conditionnés) sont mentionnés dans le cours ?", options: [ { value: 'a', text: 'a) L\'argent.' }, { value: 'b', text: 'b) L\'attention sociale.' }, { value: 'c', text: 'c) Des stimuli initialement neutres associés à des renforçateurs primaires.' }, { value: 'd', text: 'd) La nourriture et l\'eau (qui sont primaires).' } ], correctAnswers: ['a', 'b', 'c'], referenceCours: "[APP201-53-79.pdf]: Page 18 / Source 116-117", referenceText: "Renforçateurs secondaires ou conditionnés: propriétés acquises de stimuli comme renforçateurs (par\nassociation avec Sl ou renforçateurs primaires) → utilisés dans programme ABA (Source 117) ... Renforçateur secondaire généralisé: renforçateur secondaire qui fonctionne dans de multiples situations\n(argent ou attention sociale) (Source 117)"
+       },
+       {
+         id: 'q67', text: "Quelles procédures sont utilisées dans le cadre du conditionnement opérant pour enseigner ou modifier des comportements complexes ?", options: [ { value: 'a', text: 'a) Le façonnage (shaping).' }, { value: 'b', text: 'b) La sensibilisation.' }, { value: 'c', text: 'c) Le chaînage (chaining).' }, { value: 'd', text: 'd) L\'estompage (fading).' } ], correctAnswers: ['a', 'c', 'd'], referenceCours: "[APP201-53-79.pdf]: Page 20 / Source 120-121", referenceText: "Façonnage (shaping)... (Source 120) Chaînage (chaining)... (Source 121) Estompage (fading)... (Source 121)"
+       },
+       {
+         id: 'q68', text: "Parmi les définitions de l'apprentissage proposées, lesquelles soulignent le rôle de l'expérience ou du contact avec l'environnement ?", options: [ { value: 'a', text: 'a) Lieberman (2000) : "...dû à des types particuliers d\'expériences"' }, { value: 'b', text: 'b) Malcuit et al. (1995) : "...survenant à la suite de l\'expérience ou du contact avec l\'environnement"' }, { value: 'c', text: 'c) Une définition basée uniquement sur la maturation biologique.' }, { value: 'd', text: 'd) Giraldeau & Dubois (2024) : "...suite à une expérience dont la mémoire est conservée..."' } ], correctAnswers: ['a', 'b', 'd'], referenceCours: "[APP201 - Cours 1 - définitions.pdf]: Page 6-7 / Source 144, 146, 147", referenceText: "...dû à des types particuliers d'expériences (Lieberman, 2000) (Source 144) ...survenant à la suite de l'expérience ou du contact avec l'environnement » (Malcuit, Pomerleau et\nMaurice, 1995) (Source 146) ...suite à une expérience dont la mémoire est conservée dans le\nsystème nerveux (Giraldeau & Dubois, 2024) (Source 147)"
+       },
+       {
+         id: 'q69', text: "Quels concepts sont associés au conditionnement classique ?", options: [ { value: 'a', text: 'a) Extinction' }, { value: 'b', text: 'b) Renforcement négatif' }, { value: 'c', text: 'c) Généralisation du stimulus' }, { value: 'd', text: 'd) Discrimination du stimulus' } ], correctAnswers: ['a', 'c', 'd'], referenceCours: "[APP201-24-48.pdf]: Page 22, 23, 24", referenceText: "Extinction... (Page 22) généralisation... (Page 23) discrimination... (Page 24)"
+       },
+      {
+        id: 'q70', text: "Quels chercheurs sont associés au courant Béhavioriste ?", options: [ { value: 'a', text: 'a) Pavlov' }, { value: 'b', text: 'b) Watson' }, { value: 'c', text: 'c) Wundt' }, { value: 'd', text: 'd) Skinner' } ], correctAnswers: ['a', 'b', 'd'], referenceCours: "[APP201 - Cours 1 - définitions.pdf]: Page 23 / Source 184", referenceText: "1920-Behaviorisme\nPavlov, Watson, Skinner"
+      }
+    ];
+    
+      const quizDataExamBlanc = [
+  // Début des questions de l'examen blanc
+  {
+    id: 'exam_q1',
+    text: "Une chute, dans les tentatives d'un bébé pour apprendre à marcher, est un renforcement négatif.",
+    options: [ { value: 'a', text: 'a) Vrai' }, { value: 'b', text: 'b) Faux' }, { value: 'c', text: 'c) Ne sais pas' } ],
+    correctAnswers: ['b'], // Une chute ajoute un stimulus désagréable (punition positive), elle n'enlève pas un stimulus désagréable (renforcement négatif).
+    referenceCours: "[APP201-53-79.pdf]: Page 7 & 11 / Source 102 & 107",
+    referenceText: "Renforcement négatif: retirer un stimulus pour favoriser le comportement. Punition positive: ajouter un stimulus pour diminuer le comportement."
+  },
+  {
+    id: 'exam_q2',
+    text: "L'habituation est spécifique au stimulus mais peut néanmoins se généraliser vers des stimuli proches.",
+    options: [ { value: 'a', text: 'a) Vrai' }, { value: 'b', text: 'b) Faux' }, { value: 'c', text: 'c) Ne sais pas' } ],
+    correctAnswers: ['a'], // L'habituation est spécifique, mais comme le conditionnement, une certaine généralisation aux stimuli similaires est possible.
+    referenceCours: "[APP201-24-48.pdf]: Page 4 & 23 / Source 5 & 55", // Combinaison de la déf habituation et du principe de généralisation
+    referenceText: "Habituation: baisse de l'intensité d'une réponse provoquée par un stimulus particulier... Généralisation: l'association SC-SI encode la totalité des caractéristiques... Présentation d'un son de fréquence différente... peut provoquer la RC." // Référence indirecte par analogie avec généralisation du SC.
+  },
+  // Question 3 (complexe, basée sur scénario)
+  // NOTE: Les réponses dépendent d'une analyse fine du scénario à la lumière des concepts.
+  {
+    id: 'exam_q3a',
+    text: "[Scénario Bébé/Cube/Cylindre] a) Lors de la phase 1, la baisse du temps de fixation entre les essais 1-5 et les essais 6-10 s'explique par un phénomène attentionnel.",
+    options: [ { value: 'a', text: 'Vrai (Acceptable)' }, { value: 'b', text: 'Faux' } ], // L'habituation est un processus attentionnel fondamental.
+    correctAnswers: ['a'],
+    referenceCours: "[APP201-24-48.pdf]: Page 4 & 11 / Source 5 & 25",
+    referenceText: "Habituation: baisse de l'intensité d'une réponse... l'organisme \"apprend\" à ignorer les informations inutiles... (implique un filtrage attentionnel)."
+  },
+   {
+    id: 'exam_q3b',
+    text: "[Scénario Bébé/Cube/Cylindre] b) Lors de la phase 1, la baisse du temps de fixation entre les essais 1-5 et 6-10 s'explique par le fait que le bébé est maintenant conditionné.",
+    options: [ { value: 'a', text: 'Vrai' }, { value: 'b', text: 'Faux' } ], // C'est de l'habituation (non-associatif), pas du conditionnement (associatif).
+    correctAnswers: ['b'],
+    referenceCours: "[APP201-24-48.pdf]: Page 2 & 4 / Source 406 & 5",
+    referenceText: "Apprentissage non-associatif: HABITUATION... Habituation: baisse de l'intensité d'une réponse..."
+  },
+   {
+    id: 'exam_q3c',
+    text: "[Scénario Bébé/Cube/Cylindre] c) On cherche à savoir dans cette étude si le bébé est capable de s'habituer.",
+    options: [ { value: 'a', text: 'Vrai' }, { value: 'b', text: 'Faux' } ], // Oui, la phase 1 mesure explicitement cela.
+    correctAnswers: ['a'],
+    referenceCours: "[APP201-24-48.pdf]: Page 4 / Source 5",
+    referenceText: "Habituation: baisse de l'intensité d'une réponse... suite à la présentation répétée de ce stimulus." // La phase 1 correspond à cette définition.
+  },
+  {
+    id: 'exam_q3d',
+    text: "[Scénario Bébé/Cube/Cylindre] d) Une expérience de ce type ne peut être réalisé qu'à partir de l'âge de quelques mois, l'apprentissage par habituation n'étant pas possible chez les très jeunes bébés.",
+    options: [ { value: 'a', text: 'Vrai' }, { value: 'b', text: 'Faux' } ], // L'habituation est présente très tôt, même chez les nouveau-nés/prématurés.
+    correctAnswers: ['b'],
+    referenceCours: "Connaissance générale en psychologie du développement (non explicitement trouvée dans les extraits)",
+    referenceText: "L'habituation est une capacité précoce."
+  },
+  {
+    id: 'exam_q3e',
+    text: "[Scénario Bébé/Cube/Cylindre] e) L'expérience montre que le bébé discrimine tactilement le cube et le cylindre.",
+    options: [ { value: 'a', text: 'Vrai' }, { value: 'b', text: 'Faux' } ], // Oui, en phase 2 (G1), le temps d'exploration augmente significativement pour le cylindre (nouveau) vs cube (habitué).
+    correctAnswers: ['a'],
+    referenceCours: "[APP201-24-48.pdf]: Page 6-7 & 24 / Source 13, 14 & 61", // Via le concept de déshabituation/réaction à la nouveauté qui implique discrimination.
+    referenceText: "Présentation d'un nouveau stimulus restore la réponse initiale... déshabituation... Entrainement à la discrimination..." // La réaction au cylindre montre qu'il est perçu comme différent.
+  },
+  {
+    id: 'exam_q3f',
+    text: "[Scénario Bébé/Cube/Cylindre] f) L'expérience montre que le bébé a pu transférer de l'information de la modalité tactile à la modalité visuelle.",
+    options: [ { value: 'a', text: 'Vrai' }, { value: 'b', text: 'Faux' } ], // Oui, en phase 2 (G2), le temps d'exploration visuelle du cube (déjà exploré tactilement) est plus faible que celui du cylindre (nouveau visuellement).
+    correctAnswers: ['a'],
+    referenceCours: "Concept de transfert intermodal (non explicitement détaillé dans les extraits, mais l'expérience est conçue pour le montrer)",
+    referenceText: "L'habituation tactile au cube réduit l'exploration visuelle ultérieure du même cube, indiquant une reconnaissance intermodale."
+  },
+   {
+    id: 'exam_q3g',
+    text: "[Scénario Bébé/Cube/Cylindre] g) Le fait que le bébé passe moins de temps à explorer le cube visuelle lors de la phase 2 (groupe 2) que tactilement lors de la phase 1 montre que le bébé a transféré de l'information de la modalité tactile à la modalité visuelle.",
+    options: [ { value: 'a', text: 'Vrai' }, { value: 'b', text: 'Faux' } ], // Attention, on ne compare pas directement les temps absolus entre modalités (vision vs toucher). Le transfert est montré par la *différence* d'exploration *visuelle* entre cube et cylindre en phase 2 pour G2. L'affirmation est mal formulée/potentiellement fausse.
+    correctAnswers: ['b'], // Interprétation stricte : la comparaison directe des temps n'est pas la preuve.
+    referenceCours: "Logique expérimentale du transfert intermodal.",
+    referenceText: "La preuve du transfert est la différence d'exploration *au sein de la même modalité* (visuelle) entre le stimulus familiarisé dans une *autre* modalité (tactile) et un stimulus nouveau."
+  },
+  {
+    id: 'exam_q3h',
+    text: "[Scénario Bébé/Cube/Cylindre] h) Lors de la phase 2, les bébés du groupe 1 présentent un phénomène de sensibilisation sur le cylindre.",
+    options: [ { value: 'a', text: 'Vrai' }, { value: 'b', text: 'Faux' } ], // Non, ils montrent une déshabituation ( regain d'intérêt pour un stimulus nouveau après habituation à un autre). La sensibilisation est une augmentation générale de la réactivité.
+    correctAnswers: ['b'],
+    referenceCours: "[APP201-24-48.pdf]: Page 6-8 / Source 13, 14, 15",
+    referenceText: "déshabituation: réactivation de la réaction au stimulus S1 après habituation et introduction d'un stimulus S2. Sensibilisation: baisse du seuil absolu de déclenchement d'une réponse..."
+  },
+   {
+    id: 'exam_q3i',
+    text: "[Scénario Bébé/Cube/Cylindre] i) L'étude apporte la preuve qu'à l'âge étudié, les bébés du groupe 1, mais non ceux du groupe 2, ont été conditionnés.",
+     options: [ { value: 'a', text: 'Vrai' }, { value: 'b', text: 'Faux' } ], // L'étude porte sur l'habituation/déshabituation (non-associatif), pas le conditionnement (associatif).
+    correctAnswers: ['b'],
+    referenceCours: "[APP201-24-48.pdf]: Page 2 & 4",
+    referenceText: "Apprentissage non-associatif: HABITUATION, DÉSHABITUATION..."
+  },
+  {
+    id: 'exam_q3j',
+    text: "[Scénario Bébé/Cube/Cylindre] j) L'étude apporte la preuve que les capacités perceptives des groupes 1 et 2 sont identiques.",
+    options: [ { value: 'a', text: 'Vrai' }, { value: 'b', text: 'Faux' } ], // L'étude ne compare pas les capacités globales entre G1 et G2, mais utilise les groupes pour tester différentes modalités (tactile vs visuelle) en phase 2. On suppose qu'ils sont issus de la même population, mais ce n'est pas ce que l'étude prouve.
+    correctAnswers: ['b'],
+    referenceCours: "Logique expérimentale",
+    referenceText: "Les groupes sont utilisés pour comparer des conditions expérimentales, pas pour prouver l'identité de leurs capacités intrinsèques."
+  },
+   {
+    id: 'exam_q3k',
+    text: "[Scénario Bébé/Cube/Cylindre] k) Lorsque l'on présente le cylindre aux bébés du groupe 1 lors de la phase 2, un phénomène de déshabituation se produit.",
+    options: [ { value: 'a', text: 'Vrai' }, { value: 'b', text: 'Faux' } ], // Oui, c'est la réaction à la nouveauté après habituation au cube.
+    correctAnswers: ['a'],
+    referenceCours: "[APP201-24-48.pdf]: Page 6-7 / Source 13 & 14",
+    referenceText: "Présentation d'un nouveau stimulus restore la réponse initiale au 1er stimulus : déshabituation."
+  },
+   {
+    id: 'exam_q3l',
+    text: "[Scénario Bébé/Cube/Cylindre] l) Des capacités d'apprentissage perceptif du bébé sont mises en évidence dans la phase 1.",
+     options: [ { value: 'a', text: 'Vrai' }, { value: 'b', text: 'Faux' } ], // Oui, l'habituation (phase 1) est une forme d'apprentissage perceptif simple.
+    correctAnswers: ['a'],
+    referenceCours: "[APP201-24-48.pdf]: Page 11 / Source 25",
+    referenceText: "L'habituation : apprentissage par diminution de la réponse... C'est une forme d'apprentissage parce que l'organisme \"apprend\" à ignorer..."
+  },
+  // Fin Q3
+   {
+    id: 'exam_q4',
+    text: "Le phénomène de déshabituation correspond à une réaction à la nouveauté.",
+    options: [ { value: 'a', text: 'a) Vrai' }, { value: 'b', text: 'b) Faux' }, { value: 'c', text: 'c) Ne sais pas' } ],
+    correctAnswers: ['a'],
+    referenceCours: "[APP201-24-48.pdf]: Page 6-7 / Source 13 & 14",
+    referenceText: "Présentation d'un nouveau stimulus restore la réponse initiale au 1er stimulus : déshabituation." // Implique une réaction à la nouveauté.
+  },
+  {
+    id: 'exam_q5',
+    text: "Pour mettre en place un conditionnement classique, il faut présenter le stimulus neutre très peu de temps après la fin du stimulus inconditionnel.",
+    options: [ { value: 'a', text: 'a) Vrai' }, { value: 'b', text: 'b) Faux' }, { value: 'c', text: 'c) Ne sais pas' } ],
+    correctAnswers: ['b'], // Le SN/SC doit précéder le SI (sauf conditionnement simultané ou rétroactif moins efficace).
+    referenceCours: "[APP201-24-48.pdf]: Page 16 / Source 35 & 36",
+    referenceText: "Le conditionnement différé... le SC précède le Sl et persiste... Le conditionnement de trace... le SC précède le Sl et s'interrompt... Le conditionnement rétroactif (SI précède SC)..." // Les plus efficaces ont SN/SC avant SI.
+  },
+   {
+    id: 'exam_q6',
+    text: "L'apprentissage par habituation est un apprentissage associatif.",
+    options: [ { value: 'a', text: 'a) Vrai' }, { value: 'b', text: 'b) Faux' }, { value: 'c', text: 'c) Ne sais pas' } ],
+    correctAnswers: ['b'],
+    referenceCours: "[APP201-24-48.pdf]: Page 2 / Source 406",
+    referenceText: "Apprentissage non-associatif: HABITUATION..."
+  },
+  {
+    id: 'exam_q7',
+    text: "Il est possible de maintenir un comportement adapté en donnant des renforcements négatifs.",
+    options: [ { value: 'a', text: 'a) Vrai' }, { value: 'b', text: 'b) Faux' }, { value: 'c', text: 'c) Ne sais pas' } ],
+    correctAnswers: ['a'], // Oui, le retrait d'un stimulus aversif augmente la probabilité du comportement (ex: comportement d'évitement).
+    referenceCours: "[APP201-53-79.pdf]: Page 7 & 11 / Source 102 & 107",
+    referenceText: "Renforcement négatif: retirer un stimulus pour favoriser le comportement."
+  },
+   {
+    id: 'exam_q8',
+    text: "L'apprentissage par essais et erreurs est compatible avec l'approche behavioriste.",
+    options: [ { value: 'a', text: 'a) Vrai' }, { value: 'b', text: 'b) Faux' }, { value: 'c', text: 'c) Ne sais pas' } ],
+    correctAnswers: ['a'], // Oui, Thorndike est un précurseur, et cela se concentre sur l'association Situation-Réponse-Conséquence observable.
+    referenceCours: "[APP201-41-52.pdf]: Page 10 / Source 86 & [APP201 - Cours 1 - définitions.pdf]: Page 23 / Source 184",
+    referenceText: "Apprentissage par essais-erreurs (Thorndike)... 1920-Behaviorisme Pavlov, Watson, Skinner..." // Thorndike s'inscrit dans ce courant.
+  },
+  {
+    id: 'exam_q9',
+    text: "Tolman explique de l'apprentissage d'un labyrinthe par le rat comme étant lié à la construction d'une représentation.",
+    options: [ { value: 'a', text: 'a) Vrai' }, { value: 'b', text: 'b) Faux' }, { value: 'c', text: 'c) Ne sais pas' } ],
+    correctAnswers: ['a'], // Oui, concept de carte cognitive et apprentissage latent.
+    referenceCours: "[APP201-41-52.pdf]: Page 12 / Source 90 & 91",
+    referenceText: "apprentissage latent... groupe B a appris... apprentissage latent qui s'exprime avec motivation." // Implique une représentation interne non directement liée à S-R.
+  },
+   {
+    id: 'exam_q10',
+    text: "La loi théorique de l'effet envisage le maintien du comportement comme étant lié à la recherche d'un équilibre biologique.",
+    options: [ { value: 'a', text: 'a) Vrai' }, { value: 'b', text: 'b) Faux' }, { value: 'c', text: 'c) Ne sais pas' } ],
+    correctAnswers: ['b'], // La loi de l'effet concerne la satisfaction/insatisfaction (conséquences), pas directement l'homéostasie/équilibre biologique (plutôt théories des pulsions).
+    referenceCours: "[APP201-41-52.pdf]: Page 11 / Source 88",
+    referenceText: "Loi de l'effet: ...celles qui sont accompagnées ou suivies de près par la satisfaction... auront davantage de probabilités de réapparaître..."
+  },
+   {
+    id: 'exam_q11',
+    text: "L'ajout d'un stimulus désagréable comme conséquence du comportement correspond à une contingence positive.",
+    options: [ { value: 'a', text: 'a) Vrai' }, { value: 'b', text: 'b) Faux' }, { value: 'c', text: 'c) Ne sais pas' } ],
+    correctAnswers: ['a'], // Contingence positive = ajout d'un stimulus (qu'il soit agréable ou désagréable). L'effet (punition) est différent de la nature de la contingence (ajout/retrait).
+    referenceCours: "[APP201-53-79.pdf]: Page 10, 11 & 17 / Source 105, 107, 114",
+    referenceText: "Punition positive : ajouter un stimulus pour diminuer le comportement... [Tableau:] Ajoute un stimulus à la situation..." // L'ajout définit la contingence comme positive.
+  },
+  {
+    id: 'exam_q12',
+    text: "La force d'un réponse conditionnelle se définit en fonction de son intensité, mais non en fonction de son moment d'apparition.",
+     options: [ { value: 'a', text: 'a) Vrai' }, { value: 'b', text: 'b) Faux' }, { value: 'c', text: 'c) Ne sais pas' } ],
+    correctAnswers: ['b'], // La force se mesure par l'amplitude/intensité, la probabilité d'occurrence, et la latence (délai d'apparition).
+    referenceCours: "Concepts généraux du conditionnement (non détaillé dans les extraits fournis)",
+    referenceText: "La mesure de la RC inclut généralement amplitude, probabilité et latence."
+  },
+  {
+    id: 'exam_q13',
+    text: "L'apprentissage par habituation est spécifiques à l'être humain tandis que l'apprentissage par conditionnement est spécifique à l'animal.",
+    options: [ { value: 'a', text: 'a) Vrai' }, { value: 'b', text: 'b) Faux' }, { value: 'c', text: 'c) Ne sais pas' } ],
+    correctAnswers: ['b'], // Les deux types d'apprentissage se retrouvent largement dans le règne animal, y compris chez l'humain.
+    referenceCours: "Principes généraux de l'apprentissage comparé (implicite dans les exemples Pavlov/Skinner vs études bébés)",
+    referenceText: "Les mécanismes d'apprentissage fondamentaux sont partagés par de nombreuses espèces."
+  },
+  // Question 14 (Histoire/Paradigmes)
+   {
+    id: 'exam_q14a',
+    text: "[Histoire Psycho] a. L'émergence du paradigme béhavioriste s'explique par les limites scientifiques de l'approche introspectionniste.",
+    options: [ { value: 'a', text: 'Vrai' }, { value: 'b', text: 'Faux' } ],
+    correctAnswers: ['a'],
+    referenceCours: "[APP201 - Cours 1 - définitions.pdf]: Page 23 / Source 184",
+    referenceText: "1879 Structuralisme... Méthode introspection... 1920-Behaviorisme... rejet structuralisme..." // Le rejet implique une réaction aux limites perçues.
+  },
+   {
+    id: 'exam_q14b',
+    text: "[Histoire Psycho] b. Le béhaviorisme et le cognitivisme diffèrent plus par leur méthode que par leur objet d'étude.",
+    options: [ { value: 'a', text: 'Vrai' }, { value: 'b', text: 'Faux' } ], // Ils diffèrent fondamentalement par l'objet (comportement observable vs processus mentaux) ET la méthode (S-R vs inférence à partir du comportement).
+    correctAnswers: ['b'],
+    referenceCours: "[APP201 - Cours 1 - définitions.pdf]: Page 23 / Source 184",
+    referenceText: "Behaviorisme... rejet structuralisme... Méthode expérimentation... Cognitivisme... réconciliation..." // L'objet (esprit vs comportement) est une différence majeure.
+  },
+  {
+    id: 'exam_q14c',
+    text: "[Histoire Psycho] c. A la suite de l'introspectionnisme, des raisons exclusivement scientifiques ont conduit à l'engouement pour l'approche behavioriste.",
+    options: [ { value: 'a', text: 'Vrai' }, { value: 'b', text: 'Faux' } ], // Probablement pas *exclusivement* scientifiques (contexte social, désir d'objectivité "forte", etc.).
+    correctAnswers: ['b'], // Nuance importante.
+    referenceCours: "Histoire de la psychologie (interprétation)",
+    referenceText: "Les changements de paradigme sont souvent multifactoriels."
+  },
+   {
+    id: 'exam_q14d',
+    text: "[Histoire Psycho] d. Dans l'approche cognitiviste, les comportements sont étudiés dans le but d'inférer les états mentaux.",
+    options: [ { value: 'a', text: 'Vrai' }, { value: 'b', text: 'Faux' } ], // Oui, c'est le principe de base.
+    correctAnswers: ['a'],
+    referenceCours: "[APP201 - Cours 1 - définitions.pdf]: Page 23 / Source 184 & [APP201-53-79.pdf]: Page 24 & Q48",
+    referenceText: "1950-Cognitivisme... cognitivisme social... réconciliation... Les psychologues cognitivistes cherchent à relier les comportements aux états mentaux (Q48)."
+  },
+  {
+    id: 'exam_q14e',
+    text: "[Histoire Psycho] e. Certaines raisons ayant conduit à l'abandon du paradigme béhaviorisme sont de nature idéologique",
+     options: [ { value: 'a', text: 'Vrai' }, { value: 'b', text: 'Faux' } ], // Oui, le rejet de l'étude de la "boîte noire", l'importance accordée à la pensée, au langage (Chomsky), etc.
+    correctAnswers: ['a'],
+    referenceCours: "Histoire de la psychologie (révolution cognitive)",
+    referenceText: "La critique de Chomsky, l'essor de l'informatique et l'intérêt pour les processus mentaux ont contribué au déclin du behaviorisme strict."
+  },
+  {
+    id: 'exam_q14f',
+    text: "[Histoire Psycho] f. Les révolutions scientifiques correspondent à des changements de paradigme expérimental.",
+    options: [ { value: 'a', text: 'Vrai' }, { value: 'b', text: 'Faux' } ], // Oui, selon Kuhn.
+    correctAnswers: ['a'],
+    referenceCours: "[Question 34 associée]", // Lien avec la Q34 sur Kuhn.
+    referenceText: "Le passage du béhaviorisme au cognitivisme peut se décrire en termes de révolution scientifique, au sens de Kuhn (Q34)."
+  },
+   {
+    id: 'exam_q14g',
+    text: "[Histoire Psycho] g. La notion de mesure est exclue de l'approche introspectionniste.",
+    options: [ { value: 'a', text: 'Vrai' }, { value: 'b', text: 'Faux' } ], // Faux, Wundt utilisait des mesures comme les temps de réaction.
+    correctAnswers: ['b'],
+    referenceCours: "[APP201 - Cours 1 - définitions.pdf]: Page 23 / Source 184",
+    referenceText: "1879 Structuralisme Wilhem Wundt - psychophysique, perception sensation..." // La psychophysique implique des mesures.
+  },
+  {
+    id: 'exam_q14h',
+    text: "[Histoire Psycho] h. L'approche introspectionniste a été critiquée par la fait qu'elle ne propose pas de critères objectifs.",
+    options: [ { value: 'a', text: 'Vrai' }, { value: 'b', text: 'Faux' } ], // Oui, critique majeure menant au behaviorisme.
+    correctAnswers: ['a'],
+    referenceCours: "[APP201 - Cours 1 - définitions.pdf]: Page 23 / Source 184 (implicite)",
+    referenceText: "Le behaviorisme rejette le structuralisme (basé sur l'introspection) en partie pour son manque d'objectivité."
+  },
+   {
+    id: 'exam_q14i',
+    text: "[Histoire Psycho] i. Les théories béhavioristes s'intéressent à l'apprentissage par conditionnement tandis que les théories cognitivistes s'intéressent à l'apprentissage par habituation.",
+    options: [ { value: 'a', text: 'Vrai' }, { value: 'b', text: 'Faux' } ], // Trop simpliste/Faux. Les deux s'intéressent à divers apprentissages. L'habituation est un processus de base étudié dans les deux cadres.
+    correctAnswers: ['b'],
+    referenceCours: "Général",
+    referenceText: "Les cognitivistes étudient aussi les conditionnements, l'apprentissage par observation, etc., en plus des processus de base comme l'habituation."
+  },
+  {
+    id: 'exam_q14j',
+    text: "[Histoire Psycho] j. Les théories du conditionnement classique considèrent que l'on apprend en agissant.",
+     options: [ { value: 'a', text: 'Vrai' }, { value: 'b', text: 'Faux' } ], // Faux, c'est le conditionnement opérant qui met l'accent sur l'action et ses conséquences. CC concerne l'association de stimuli.
+    correctAnswers: ['b'],
+    referenceCours: "[APP201-24-48.pdf]: Page 13 / Source 30 & [APP201-41-52.pdf]: Page 10 / Source 86",
+    referenceText: "Conditionnement classique (Pavlov): association SN+SI->RI. Apprentissage par essais-erreurs (Thorndike) / opérant (Skinner): apprendre par les conséquences de l'action."
+  },
+  // Fin Q14
+   {
+    id: 'exam_q15',
+    text: "Les psychologues cognitivistes cherchent à relier les comportements aux états mentaux.",
+     options: [ { value: 'a', text: 'a) Vrai' }, { value: 'b', text: 'b) Faux' }, { value: 'c', text: 'c) Ne sais pas' } ],
+    correctAnswers: ['a'],
+    referenceCours: "[Q14d associée]",
+    referenceText: "Dans l'approche cognitiviste, les comportements sont étudiés dans le but d'inférer les états mentaux."
+  },
+  {
+    id: 'exam_q16',
+    text: "Une thérapie comportementale peut viser à remplacer une réponse d'anxiété par une réponse de relaxation.",
+    options: [ { value: 'a', text: 'a) Vrai' }, { value: 'b', text: 'b) Faux' }, { value: 'c', text: 'c) Ne sais pas' } ],
+    correctAnswers: ['a'], // Contre-conditionnement / Désensibilisation systématique.
+    referenceCours: "[APP201-24-48.pdf]: Page 25 / Source 62",
+    referenceText: "Le contre-conditionnement: supprimer une RC... Coupler le SC avec un autre SI2 qui provoque une RI2 incompatible avec RC1..."
+  },
+   {
+    id: 'exam_q17',
+    text: "L'habituation correspond à la diminution de la réponse attentionnelle face à un évènement qui se répète.",
+    options: [ { value: 'a', text: 'a) Vrai' }, { value: 'b', text: 'b) Faux' }, { value: 'c', text: 'c) Ne sais pas' } ],
+    correctAnswers: ['a'],
+    referenceCours: "[APP201-24-48.pdf]: Page 4 & 11 / Source 5 & 25",
+    referenceText: "Habituation: baisse de l'intensité d'une réponse... l'organisme \"apprend\" à ignorer..." // Implique une baisse de l'attention portée au stimulus.
+  },
+   {
+    id: 'exam_q18',
+    text: "Les techniques d'enseignement programmé conduisant à renforcer les réponses des élèves sont basées sur les principes du conditionnement répondant.",
+    options: [ { value: 'a', text: 'a) Vrai' }, { value: 'b', text: 'b) Faux' }, { value: 'c', text: 'c) Ne sais pas' } ],
+    correctAnswers: ['b'], // Basées sur le conditionnement OPÉRANT (Skinner). Répondant = Classique (Pavlov).
+    referenceCours: "[Association Skinner/Opérant vs Pavlov/Classique]",
+    referenceText: "L'enseignement programmé est une application des principes skinnériens (opérant)."
+  },
+  {
+    id: 'exam_q19',
+    text: "Le phénomène d'adaptation sensorielle correspond à un comportement opérant.",
+     options: [ { value: 'a', text: 'a) Vrai' }, { value: 'b', text: 'b) Faux' }, { value: 'c', text: 'c) Ne sais pas' } ],
+    correctAnswers: ['b'], // Adaptation sensorielle = processus physiologique neuronal, pas un comportement appris par conséquences.
+    referenceCours: "Distinction processus physiologiques vs apprentissage",
+    referenceText: "L'adaptation sensorielle est une modification de la sensibilité des récepteurs, pas un apprentissage opérant."
+  },
+   {
+    id: 'exam_q20',
+    text: "La prise d'aspirine, pour éviter les mots de tête, est un renforcement positif.",
+    options: [ { value: 'a', text: 'a) Vrai' }, { value: 'b', text: 'b) Faux' }, { value: 'c', text: 'c) Ne sais pas' } ],
+    correctAnswers: ['b'], // C'est un renforcement NÉGATIF (on enlève la douleur/le mal de tête).
+    referenceCours: "[APP201-53-79.pdf]: Page 7 & 11 / Source 102 & 107",
+    referenceText: "Renforcement négatif: retirer un stimulus [aversif] pour favoriser le comportement."
+  },
+  {
+    id: 'exam_q21',
+    text: "L'apprentissage par conditionnement peut se faire sans tenir compte des motivations de l'individu.",
+    options: [ { value: 'a', text: 'a) Vrai' }, { value: 'b', text: 'b) Faux' }, { value: 'c', text: 'c) Ne sais pas' } ],
+    correctAnswers: ['b'], // La motivation (faim, soif, évitement de la douleur) est souvent un facteur clé, surtout en opérant (valeur du renforçateur). Tolman a montré que l'apprentissage pouvait être latent et ne s'exprimer qu'avec motivation.
+    referenceCours: "[APP201-41-52.pdf]: Page 12 / Source 91 & [APP201-53-79.pdf]: Page 17 / Source 114",
+    referenceText: "...apprentissage latent qui s'exprime avec motivation (Source 91). Condition de motivation: antécédent... (Source 114)."
+  },
+   {
+    id: 'exam_q22',
+    text: "La méthode d'habituation/ réaction à la nouveauté est utile pour étudier les capacités de discrimination des sujets non verbaux.",
+    options: [ { value: 'a', text: 'a) Vrai' }, { value: 'b', text: 'b) Faux' }, { value: 'c', text: 'c) Ne sais pas' } ],
+    correctAnswers: ['a'], // Oui, largement utilisée chez les bébés et animaux.
+    referenceCours: "[Question 3 associée]",
+    referenceText: "L'expérience sur les bébés (Q3) utilise cette méthode pour tester la discrimination."
+  },
+  {
+    id: 'exam_q23',
+    text: "L'apprentissage résultant du comportement opérant consiste en l'élaboration d'une représentation.",
+    options: [ { value: 'a', text: 'a) Vrai' }, { value: 'b', text: 'b) Faux' }, { value: 'c', text: 'c) Ne sais pas' } ],
+    correctAnswers: ['b'], // Selon le behaviorisme strict (Skinner), non. L'apprentissage est vu comme un changement de probabilité de réponse S-R basé sur les conséquences, sans invoquer de représentation interne.
+    referenceCours: "[APP201 - Cours 1 - définitions.pdf]: Page 23 / Source 184 (Behaviorisme)",
+    referenceText: "Le behaviorisme (Skinner) rejette l'étude des processus mentaux internes / représentations."
+  },
+   {
+    id: 'exam_q24',
+    text: "Skinner envisage que l'individu apprend en regardant comment les autres agissent.",
+    options: [ { value: 'a', text: 'a) Vrai' }, { value: 'b', text: 'b) Faux' }, { value: 'c', text: 'c) Ne sais pas' } ],
+    correctAnswers: ['b'], // C'est Bandura (apprentissage social/vicariant), pas Skinner.
+    referenceCours: "[APP201-53-79.pdf]: Page 24 / Source 127",
+    referenceText: "Apprentissage vicariant: acquisition... liée à l'observation d'autrui... (Albert Bandura)."
+  },
+  {
+    id: 'exam_q25',
+    text: "La notion de propriété émergente est centrale dans le paradigme gestaltiste, mais non dans le paradigme béhavioriste.",
+    options: [ { value: 'a', text: 'a) Vrai' }, { value: 'b', text: 'b) Faux' }, { value: 'c', text: 'c) Ne sais pas' } ],
+    correctAnswers: ['a'], // Gestalt : "le tout est plus que la somme des parties". Behaviorisme : décomposition en S-R.
+    referenceCours: "Histoire/Paradigmes de la psychologie",
+    referenceText: "Concepts fondamentaux de la Gestalt vs Behaviorisme."
+  },
+  {
+    id: 'exam_q26',
+    text: "Les théories béhavioristes accordent une place existentielle aux compétences innées.",
+    options: [ { value: 'a', text: 'a) Vrai' }, { value: 'b', text: 'b) Faux' }, { value: 'c', text: 'c) Ne sais pas' } ],
+    correctAnswers: ['b'], // Le behaviorisme (surtout Watson) met l'accent sur l'acquis, l'environnement ("tabula rasa").
+    referenceCours: "[APP201 - Cours 1 - définitions.pdf]: Page 23 / Source 184 (implicite)",
+    referenceText: "Le behaviorisme s'oppose aux approches innéistes en mettant l'accent sur l'apprentissage par l'expérience."
+  },
+   {
+    id: 'exam_q27',
+    text: "Les théories et les données empiriques sont envisagées de façon dissociée au sein de la science normale.",
+    options: [ { value: 'a', text: 'a) Vrai' }, { value: 'b', text: 'b) Faux' }, { value: 'c', text: 'c) Ne sais pas' } ],
+    correctAnswers: ['b'], // En science normale (Kuhn), les données sont interprétées à travers le prisme de la théorie dominante (paradigme). Elles sont liées.
+    referenceCours: "Épistémologie (T. Kuhn)",
+    referenceText: "La science normale teste et affine le paradigme existant, liant théorie et données."
+  },
+  {
+    id: 'exam_q28',
+    text: "Une fois une réponse conditionnelle établie, les renforcements ne sont plus nécessaires pour maintenir cette réponse dans la durée.",
+    options: [ { value: 'a', text: 'a) Vrai' }, { value: 'b', text: 'b) Faux' }, { value: 'c', text: 'c) Ne sais pas' } ],
+    correctAnswers: ['b'], // Sans renforcement (opérant) ou ré-appariement SC-SI (classique), l'extinction se produit.
+    referenceCours: "[APP201-24-48.pdf]: Page 22 / Source 54",
+    referenceText: "Extinction... Récupération spontanée..." // L'extinction montre la nécessité du maintien.
+  },
+   {
+    id: 'exam_q29',
+    text: "La méthode expérimentale est utilisée à la fois au sein du béhaviorisme et du cognitivisme.",
+    options: [ { value: 'a', text: 'a) Vrai' }, { value: 'b', text: 'b) Faux' }, { value: 'c', text: 'c) Ne sais pas' } ],
+    correctAnswers: ['a'],
+    referenceCours: "[APP201 - Cours 1 - définitions.pdf]: Page 23 / Source 184 (mentionne exp pour behaviorisme)",
+    referenceText: "Les deux approches utilisent l'expérimentation comme méthode principale, bien que les objectifs diffèrent."
+  },
+  {
+    id: 'exam_q30',
+    text: "Le conditionnement opérant consiste à créer des associations entre stimuli.",
+    options: [ { value: 'a', text: 'a) Vrai' }, { value: 'b', text: 'b) Faux' }, { value: 'c', text: 'c) Ne sais pas' } ],
+    correctAnswers: ['b'], // Opérant = association Réponse-Conséquence. Classique = association Stimulus-Stimulus.
+    referenceCours: "[Distinction Classique / Opérant]",
+    referenceText: "Le conditionnement classique associe SN et SI. Le conditionnement opérant associe un comportement volontaire à sa conséquence."
+  },
+   {
+    id: 'exam_q31',
+    text: "Le fait qu'un automobiliste réengage de l'attention sur sa conduite suite à la vue d'un accident correspond à un phénomène de déshabituation.",
+     options: [ { value: 'a', text: 'a) Vrai' }, { value: 'b', text: 'b) Faux' }, { value: 'c', text: 'c) Ne sais pas' } ],
+    correctAnswers: ['a'], // La vue de l'accident (stimulus nouveau/salient) restaure l'attention (réponse) qui s'était peut-être habituée à la conduite monotone.
+    referenceCours: "[APP201-24-48.pdf]: Page 6-7 / Source 13 & 14",
+    referenceText: "Présentation d'un nouveau stimulus restore la réponse initiale au 1er stimulus : déshabituation."
+  },
+  // Question 32 (Phobie ascenseur)
+  {
+    id: 'exam_q32a',
+    text: "[Phobie Ascenseur] a. L'ascenseur avant l'évènement traumatisant est uns stimulus neutre vis-à-vis de la réponse d'angoisse.",
+    options: [ { value: 'a', text: 'Vrai' }, { value: 'b', text: 'Faux' } ],
+    correctAnswers: ['a'], // Avant l'association avec le blocage traumatisant.
+    referenceCours: "[APP201-24-48.pdf]: Page 13 / Source 30",
+    referenceText: "Clochette = stimulus neutre SN≠ RI"
+  },
+  {
+    id: 'exam_q32b',
+    text: "[Phobie Ascenseur] b. La peur des ascenseurs résulte ici d'un apprentissage par conditionnement opérant.",
+    options: [ { value: 'a', text: 'Vrai' }, { value: 'b', text: 'Faux' } ], // La PEUR (réponse émotionnelle) est issue du conditionnement CLASSIQUE (association Ascenseur-Traumatisme).
+    correctAnswers: ['b'],
+    referenceCours: "[Distinction Classique/Opérant]",
+    referenceText: "L'association stimulus-réponse émotionnelle est typique du conditionnement classique."
+  },
+  {
+    id: 'exam_q32c',
+    text: "[Phobie Ascenseur] c. La réponse d'angoisse, générée par le fait d'être bloqué dans l'ascenseur, est une réponse conditionnelle.",
+    options: [ { value: 'a', text: 'Vrai' }, { value: 'b', text: 'Faux' } ], // Non, c'est la réponse INCONDITIONNELLE (RI) au stimulus INCONDITIONNEL (SI = être bloqué).
+    correctAnswers: ['b'],
+    referenceCours: "[APP201-24-48.pdf]: Page 13 / Source 30",
+    referenceText: "Nourriture = stimulus inconditionnel Salivation = réponse inconditionnelle SI→ RI"
+  },
+   {
+    id: 'exam_q32d',
+    text: "[Phobie Ascenseur] d. Intervient, dans la situation décrite, une généralisation de l'apprentissage.",
+    options: [ { value: 'a', text: 'Vrai' }, { value: 'b', text: 'Faux' } ], // Oui, peur des ascenseurs ET des espaces clos en général.
+    correctAnswers: ['a'],
+    referenceCours: "[APP201-24-48.pdf]: Page 23 / Source 55",
+    referenceText: "généralisation: l'association SC-SI encode la totalité des caractéristiques... Présentation d'un son de fréquence différente... peut provoquer la RC"
+  },
+  {
+    id: 'exam_q32e',
+    text: "[Phobie Ascenseur] e. Les espaces clos représentent ici un stimulus inconditionnel vis-à-vis de la réponse d'angoisse.",
+    options: [ { value: 'a', text: 'Vrai' }, { value: 'b', text: 'Faux' } ], // Non, le SI est l'événement traumatisant (être bloqué). Les espaces clos sont des stimuli (initialement neutres ou devenus SC par généralisation) associés.
+    correctAnswers: ['b'],
+    referenceCours: "[APP201-24-48.pdf]: Page 13 / Source 30",
+    referenceText: "Le SI est ce qui déclenche la RI sans apprentissage (le trauma). Le SC (ascenseur, espaces clos) déclenche la RC après apprentissage."
+  },
+   {
+    id: 'exam_q32f',
+    text: "[Phobie Ascenseur] f. Faire en sorte de ne pas se retrouver dans des espaces clos pour ne pas ressentir l'angoisse est un comportement répondant.",
+    options: [ { value: 'a', text: 'Vrai' }, { value: 'b', text: 'Faux' } ], // Non, c'est un comportement volontaire d'évitement, donc OPÉRANT (maintenu par renforcement négatif). Répondant = classique/réflexe.
+    correctAnswers: ['b'],
+    referenceCours: "[Distinction Opérant/Répondant + Q35]",
+    referenceText: "Les conduites d'évitement sont des comportements opérants (Q35)."
+  },
+   {
+    id: 'exam_q32g',
+    text: "[Phobie Ascenseur] g. Le fait qu'un conditionnement puisse avoir lieu suite à une exposition unique ne concorde pas avec les propositions de Pavlov.",
+    options: [ { value: 'a', text: 'Vrai' }, { value: 'b', text: 'Faux' } ], // Faux. Pavlov a souvent utilisé plusieurs essais, mais le conditionnement (surtout aversif) peut être très rapide, en un seul essai. Ce n'est pas *contraire* aux principes.
+    correctAnswers: ['b'],
+    referenceCours: "[APP201-24-48.pdf]: Page 19 / Source 41 (Nombre d'appariements)",
+    referenceText: "La vitesse d'acquisition dépend de plusieurs facteurs. Le conditionnement aversif (goût, peur) est souvent rapide."
+  },
+   {
+    id: 'exam_q32h',
+    text: "[Phobie Ascenseur] h. Dans une situation de ce type, une thérapie comportementale aura pour objectif de remplacer les associations établies par de nouvelles associations.",
+    options: [ { value: 'a', text: 'Vrai' }, { value: 'b', text: 'Faux' } ], // Oui, principe du contre-conditionnement ou de l'extinction par exposition.
+    correctAnswers: ['a'],
+    referenceCours: "[APP201-24-48.pdf]: Page 25 / Source 62 & Q16",
+    referenceText: "Le contre-conditionnement: supprimer une RC... Coupler le SC avec un autre SI2 qui provoque une RI2 incompatible..."
+  },
+  // Fin Q32
+  // Question 33 (Prise de parole)
+  {
+    id: 'exam_q33a',
+    text: "[Prise parole] a. Faire en sorte de ne pas prendre la parole en public est un comportement opérant.",
+    options: [ { value: 'a', text: 'Vrai' }, { value: 'b', text: 'Faux' } ], // Oui, comportement volontaire d'évitement.
+    correctAnswers: ['a'],
+    referenceCours: "[Q35 associée]",
+    referenceText: "Les conduites d'évitement des patients phobiques sont des comportements opérants."
+  },
+  {
+    id: 'exam_q33b',
+    text: "[Prise parole] b. La réduction de l'anxiété comme conséquence de ne pas prendre la parole en public est un renforcement positif.",
+    options: [ { value: 'a', text: 'Vrai' }, { value: 'b', text: 'Faux' } ], // Non, retrait d'un état aversif = renforcement NÉGATIF.
+    correctAnswers: ['b'],
+    referenceCours: "[APP201-53-79.pdf]: Page 7 & 11 / Source 102 & 107",
+    referenceText: "Renforcement négatif: retirer un stimulus [aversif] pour favoriser le comportement."
+  },
+  {
+    id: 'exam_q33c',
+    text: "[Prise parole] c. Le sentiment d'humiliation de Pierre suite aux questions qui l'ont mis dans l'embarras peut être considéré comme une réponse inconditionnelle.",
+     options: [ { value: 'a', text: 'Vrai' }, { value: 'b', text: 'Faux' } ], // Oui, réponse émotionnelle directe à l'événement humiliant (SI).
+    correctAnswers: ['a'],
+    referenceCours: "[APP201-24-48.pdf]: Page 13 / Source 30 (par analogie)",
+    referenceText: "La réponse naturelle à un stimulus déclencheur sans apprentissage est une RI."
+  },
+   {
+    id: 'exam_q33d',
+    text: "[Prise parole] d. La loi empirique de l'effet a été proposé par Watson.",
+    options: [ { value: 'a', text: 'Vrai' }, { value: 'b', text: 'Faux' } ], // Non, par Thorndike.
+    correctAnswers: ['b'],
+    referenceCours: "[APP201-41-52.pdf]: Page 10 & 11 / Source 86 & 88",
+    referenceText: "Apprentissage par essais-erreurs Edward Lee Thorndike... Loi de l'effet..."
+  },
+  {
+    id: 'exam_q33e',
+    text: "[Prise parole] e. La force de l'association stimulus-réponse, dans une situation de ce type, est dépendante du degré d'humiliation ressentie.",
+    options: [ { value: 'a', text: 'Vrai' }, { value: 'b', text: 'Faux' } ], // Oui, l'intensité du SI (humiliation) influence la force du conditionnement.
+    correctAnswers: ['a'],
+    referenceCours: "[APP201-24-48.pdf]: Page 19 / Source 42",
+    referenceText: "Intensité du Sl affecte la force du conditionnement (RC)."
+  },
+   {
+    id: 'exam_q33f',
+    text: "[Prise parole] f. Le psychologue propose ici une explication basée sur un principe de conditionnement classique.",
+     options: [ { value: 'a', text: 'Vrai' }, { value: 'b', text: 'Faux' } ], // Oui, l'origine de la peur/anxiété liée à la prise de parole est expliquée par l'association traumatisante (Cond. Classique).
+    correctAnswers: ['a'],
+    referenceCours: "[APP201-24-48.pdf]: Page 15 / Source 33 (Analogie Petit Albert)",
+    referenceText: "L'association d'un stimulus initialement neutre (prise de parole) avec un événement aversif (humiliation) créant une réponse émotionnelle conditionnée est du conditionnement classique."
+  },
+  {
+    id: 'exam_q33g',
+    text: "[Prise parole] g. Le fait que les difficultés de prise de parole de Pierre interviennent surtout avec les personnes expertes dans le domaine s'explique en terme de discrimination de l'apprentissage.",
+    options: [ { value: 'a', text: 'Vrai' }, { value: 'b', text: 'Faux' } ], // Oui, la réponse conditionnée (anxiété) est plus forte/présente face à un stimulus spécifique (experts = SC+) qu'à d'autres (non-experts = SC-).
+    correctAnswers: ['a'],
+    referenceCours: "[APP201-24-48.pdf]: Page 24 / Source 61",
+    referenceText: "Entrainement à la discrimination... Au fur et à mesure seul SC+ =RC..."
+  },
+   {
+    id: 'exam_q33h',
+    text: "[Prise parole] h. La loi théorique de l'effet insiste sur la nécessité d'identifier les circonstances où les renforcements/ punitions apparaissent.",
+     options: [ { value: 'a', text: 'Vrai' }, { value: 'b', text: 'Faux' } ], // Oui, comprendre la relation entre la situation (S), la réponse (R) et la conséquence (C) est clé.
+    correctAnswers: ['a'],
+    referenceCours: "[APP201-41-52.pdf]: Page 11 / Source 88",
+    referenceText: "Loi de l'effet: Des différentes réponses produites pour une même situation, celles qui sont accompagnées ou suivies de près par la satisfaction..." // Souligne le lien situation-réponse-conséquence.
+  },
+  // Fin Q33
+   {
+    id: 'exam_q34',
+    text: "Le passage du béhaviorisme au cognitivisme peut se décrire en termes de révolution scientifique, au sens de Kuhn.",
+    options: [ { value: 'a', text: 'a) Vrai' }, { value: 'b', text: 'b) Faux' }, { value: 'c', text: 'c) Ne sais pas' } ],
+    correctAnswers: ['a'], // Souvent décrit comme un changement de paradigme majeur.
+    referenceCours: "[Q14f associée]",
+    referenceText: "Les révolutions scientifiques correspondent à des changements de paradigme expérimental (Q14f)."
+  },
+  {
+    id: 'exam_q35',
+    text: "Les conduites d'évitement des patients phobiques sont des comportements opérants",
+    options: [ { value: 'a', text: 'a) Vrai' }, { value: 'b', text: 'b) Faux' }, { value: 'c', text: 'c) Ne sais pas' } ],
+    correctAnswers: ['a'], // Maintenus par renforcement négatif.
+    referenceCours: "[Q32f, Q33a associées]",
+    referenceText: "L'évitement actif d'une situation anxiogène est un comportement volontaire appris par ses conséquences (réduction de l'anxiété)."
+  },
+  {
+    id: 'exam_q36',
+    text: "Le renforcement positif et le renforcement négatif sont 2 contingences conduisant à augmenter la probabilité de réponse.",
+     options: [ { value: 'a', text: 'a) Vrai' }, { value: 'b', text: 'b) Faux' }, { value: 'c', text: 'c) Ne sais pas' } ],
+    correctAnswers: ['a'], // C'est la définition même du renforcement.
+    referenceCours: "[APP201-53-79.pdf]: Page 7 & 11 / Source 102 & 107",
+    referenceText: "Renforcer = augmenter le comportement. Renforcement positif... Renforcement négatif..."
+  }
+  // Fin des questions de l'examen blanc
+];
+
+// Vous pouvez ensuite ajouter ce tableau 'quizDataExamBlanc' à votre tableau 'quizData' principal
+// ou le traiter séparément. Par exemple :
+// quizData = quizData.concat(quizDataExamBlanc); // Pour les fusionner
+// Ou juste utiliser quizDataExamBlanc si vous voulez un QCM séparé basé sur l'examen blanc.
+
+console.log("Bloc de questions de l'examen blanc généré.", quizDataExamBlanc);
+    
+
+    // --- Fonctions Utilitaires ---
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    }
+
+    // --- Génération HTML ---
+     function createQuestionHTML(questionData, index) {
+        const displayIndex = index + 1;
+        const optionsHTML = questionData.options.map(option => `
+            <label>
+                <input type="checkbox" name="q${questionData.id}_options" value="${option.value}">
+                <span>${option.text}</span>
+            </label>
+        `).join('');
+
+        // Stocke la référence TEXTE dans un data attribute (sera utilisé par verifierReponseQuestion)
+        // Échapper les caractères spéciaux HTML dans le texte de référence pour l'attribut data-*
+        const escapedReferenceText = questionData.referenceText ? escapeHtml(questionData.referenceText) : '';
+
+        return `
+            <div class="question-block" id="${questionData.id}" data-question-id="${questionData.id}">
+                <p>${displayIndex}. ${questionData.text}</p>
+                <div class="options">
+                    ${optionsHTML}
+                </div>
+                <button type="button" class="verify-button" onclick="verifierReponseApprentissage(this)">Vérifier</button>
+                <div class="feedback-area"></div>
+                <div class="reference-cours" style="display: none;" data-reference-text="${escapedReferenceText}">
+                    </div>
+            </div>
+        `;
+    }
+
+    // Fonction utilitaire pour échapper le HTML dans les data attributes
+    function escapeHtml(unsafe) {
+        if (!unsafe) return '';
+        return unsafe
+             .replace(/&/g, "&amp;")
+             .replace(/</g, "&lt;")
+             .replace(/>/g, "&gt;")
+             .replace(/"/g, "&quot;")
+             .replace(/'/g, "&#039;");
+    }
+
+
+    function displayQuestions() {
+        const questionsToDisplay = [...quizData];
+        const shuffledQuestions = shuffleArray(questionsToDisplay);
+        console.log("Ordre des questions mélangées (IDs):", shuffledQuestions.map(q => q.id));
+
+        const quizForm = document.getElementById('quiz-form');
+        let quizHTML = '';
+        shuffledQuestions.forEach((question, index) => {
+            quizHTML += createQuestionHTML(question, index);
+        });
+        quizForm.innerHTML = quizHTML;
+    }
+
+    // --- Logique de Vérification ---
+    function verifierReponseApprentissage(buttonElement) {
+        const questionBlock = buttonElement.closest('.question-block');
+        const questionId = questionBlock.dataset.questionId;
+
+        if (questionBlock.classList.contains('verified')) return;
+
+        const questionData = quizData.find(q => q.id === questionId);
+        if (!questionData) return;
+
+        const userCheckboxes = questionBlock.querySelectorAll('input[type="checkbox"]:checked');
+        const userAnswers = Array.from(userCheckboxes).map(cb => cb.value);
+        const correctAnswers = questionData.correctAnswers;
+        const isCorrect = correctAnswers.length === userAnswers.length && correctAnswers.every(ans => userAnswers.includes(ans));
+
+        // Afficher le feedback (Correct/Incorrect)
+        const feedbackElement = questionBlock.querySelector('.feedback-area');
+        if (isCorrect) {
+            feedbackElement.textContent = "Correct !";
+            feedbackElement.className = 'feedback-area correct';
+        } else {
+            const correctAnswersText = correctAnswers.map(ans => {
+                const option = questionData.options.find(opt => opt.value === ans);
+                const optionTextOnly = option ? option.text.substring(option.text.indexOf(')') + 1).trim() : ans;
+                return `(${ans}) ${optionTextOnly}`;
+            }).join('; ');
+            feedbackElement.textContent = `Incorrect. La/les bonne(s) réponse(s) étai(en)t : ${correctAnswersText}.`;
+            feedbackElement.className = 'feedback-area incorrect';
+        }
+        feedbackElement.style.display = 'block';
+
+        // **** NOUVEAU : Afficher la référence au cours (texte) ****
+        const referenceElement = questionBlock.querySelector('.reference-cours');
+        // Récupère le texte depuis l'attribut data-reference-text (important: non échappé ici)
+        const referenceText = questionData.referenceText || ''; // Utilise la donnée JS directement
+
+        if (referenceText) {
+             // Ajoute le titre et le texte, gérant les sauts de ligne du texte source
+             referenceElement.innerHTML = `<strong>Référence du cours :</strong><br><pre>${referenceText.replace(/<br>/g, '\n')}</pre>`; // Utilise <pre> pour préserver les sauts de ligne
+             referenceElement.style.display = 'block';
+        } else {
+             referenceElement.style.display = 'none';
+        }
+        // **********************************************************
+
+        // Appliquer les styles visuels aux options et désactiver
+        const allLabels = questionBlock.querySelectorAll('.options label');
+        allLabels.forEach(label => {
+            const checkbox = label.querySelector('input[type="checkbox"]');
+            const optionValue = checkbox.value;
+            const isCorrectAnswer = correctAnswers.includes(optionValue);
+            const isSelected = userAnswers.includes(optionValue);
+
+            label.classList.remove('label-correct', 'label-incorrect-selected', 'missed');
+
+            if (isCorrectAnswer) {
+                label.classList.add('label-correct');
+                if (!isSelected) label.classList.add('missed');
+            } else if (isSelected) {
+                label.classList.add('label-incorrect-selected');
+            }
+            checkbox.disabled = true;
+        });
+
+        // Marquer la question comme vérifiée et correcte/incorrecte
+        questionBlock.classList.add('verified');
+        questionBlock.classList.add(isCorrect ? 'correct' : 'incorrect');
+
+        // Désactiver le bouton "Vérifier"
+        buttonElement.disabled = true;
+    }
+
+    // --- Logique du Score Final ---
+    function calculerScoreFinal() {
+        const allQuestionBlocks = document.querySelectorAll('.question-block');
+        let correctCount = 0;
+        let verifiedCount = 0;
+        const totalQuestions = quizData.length; // Nombre total de questions
+
+        allQuestionBlocks.forEach(block => {
+            if (block.classList.contains('verified')) {
+                verifiedCount++;
+                if (block.classList.contains('correct')) {
+                    correctCount++;
+                }
+            }
+        });
+
+        const resultsElement = document.getElementById('results');
+        resultsElement.textContent = `Score final : ${correctCount} / ${verifiedCount} questions vérifiées (sur ${totalQuestions} au total).`;
+
+        // Appliquer un style simple (optionnel)
+        resultsElement.classList.remove('passed', 'failed'); // Reset classes
+        if (verifiedCount > 0) { // Éviter la division par zéro si aucune question n'est vérifiée
+             const scorePercentage = (correctCount / verifiedCount) * 100;
+             // Vous pouvez définir un seuil de réussite si vous le souhaitez
+             // if (scorePercentage >= 50) {
+             //     resultsElement.classList.add('passed');
+             // } else {
+             //     resultsElement.classList.add('failed');
+             // }
+        } else {
+             resultsElement.textContent = "Aucune question n'a été vérifiée.";
+        }
+
+
+        // Optionnel : Désactiver tous les boutons
+        document.querySelectorAll('.verify-button').forEach(btn => btn.disabled = true);
+        document.getElementById('terminerBtn').disabled = true;
+        document.getElementById('terminerBtn').style.cursor = 'not-allowed';
+        document.getElementById('terminerBtn').style.backgroundColor = '#6c757d'; // Gris
+    }
+
+    // --- Initialisation ---
+    document.addEventListener('DOMContentLoaded', displayQuestions);
+
+// --- Logique pour le bouton Retour Accueil ---
+document.addEventListener('DOMContentLoaded', () => { // Attend que la page soit chargée
+    const backButton = document.getElementById('back-to-home-btn');
+    if (backButton) {
+        backButton.addEventListener('click', function(event) {
+            // Empêche le lien de suivre immédiatement
+            event.preventDefault();
+
+            // Affiche la boîte de dialogue de confirmation
+            const userConfirmed = confirm("Êtes-vous sûr de vouloir abandonner ? Vos réponses ne seront pas sauvegardées");
+
+            // Si l'utilisateur clique sur "OK"
+            if (userConfirmed) {
+                // Redirige vers la page d'accueil
+                window.location.href = 'Accueil.html';
+            }
+            // Si l'utilisateur clique sur "Annuler", ne rien faire.
+        });
+    }
+});
+
+</script>
+
+</body>
+</html>
