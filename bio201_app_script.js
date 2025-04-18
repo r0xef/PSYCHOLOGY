@@ -1,4 +1,4 @@
-// bio201_app_script.js - Logique SPA (CORRIGÉ pour afficher les références)
+// bio201_app_script.js - Logique SPA (CORRIGÉ pour l'affichage des apostrophes dans le feedback)
 
 class Bio201App {
     constructor() {
@@ -6,6 +6,10 @@ class Bio201App {
         this.STORAGE_KEY = 'bio201_statuses';
         this.BATCH_SIZE = 20;
 
+        // *** NOUVEAU : Référence pour l'icône et popup info BIO ***
+        this.infoIconBio = document.getElementById('info-icon-bio');
+        this.infoPopupBio = document.getElementById('info-popup-bio');
+        
         // --- État de l'application ---
         this.questionStatuses = {};
         this.currentCategory = null;
@@ -22,17 +26,19 @@ class Bio201App {
         this.countTodoEl = document.getElementById('count-todo');
         this.countIncorrectEl = document.getElementById('count-incorrect');
         this.countCorrectEl = document.getElementById('count-correct');
-        // Pour la délégation d'événements sur le menu :
         this.menuContainerEl = this.menuView?.querySelector('.menu-container');
         this.resetBtn = document.getElementById('reset-progress');
 
         // --- Références DOM (éléments du quiz) ---
         this.quizTitleEl = document.getElementById('quiz-title');
         this.quizInstructionsEl = document.getElementById('quiz-instructions');
-        this.quizFormEl = document.getElementById('quiz-form'); // Conteneur pour la délégation
+        this.quizFormEl = document.getElementById('quiz-form');
         this.quizResultsEl = document.getElementById('quiz-results');
         this.quizBackBtn = document.getElementById('quiz-backBtn');
         this.quizNextBtn = document.getElementById('quiz-nextBtn');
+
+        // Ajoutez cette ligne avec les autres références DOM
+        this.floatingBackBtn = document.getElementById('floating-back-btn');
 
         // --- Vérification des données externes ---
         if (typeof quizDataBio201 === 'undefined' || !Array.isArray(quizDataBio201)) {
@@ -128,11 +134,22 @@ class Bio201App {
     // --- Méthodes de Gestion des Vues --- (Inchangées)
 
     showView(viewToShow) {
-        if (!this.menuView || !this.quizView) return;
+        // Vérifie que les éléments existent (sécurité)
+        if (!this.menuView || !this.quizView || !this.floatingBackBtn) return;
+    
+        // Masque toutes les vues et le bouton flottant par défaut
         this.menuView.classList.remove('active');
         this.quizView.classList.remove('active');
+        this.floatingBackBtn.style.display = 'none'; // Caché par défaut
+    
+        // Active la vue demandée
         viewToShow.classList.add('active');
         console.log(`Affichage de la vue: ${viewToShow.id}`);
+    
+        // Affiche le bouton flottant SEULEMENT si on est dans la vue Quiz
+        if (viewToShow === this.quizView) {
+            this.floatingBackBtn.style.display = 'inline-block';
+        }
     }
 
     showMenuView() {
@@ -184,6 +201,7 @@ class Bio201App {
         this.menuContainerEl?.querySelector('#category-todo')?.classList.toggle('disabled', todoCount === 0);
         this.menuContainerEl?.querySelector('#category-incorrect')?.classList.toggle('disabled', incorrectCount === 0);
         this.menuContainerEl?.querySelector('#category-correct')?.classList.toggle('disabled', correctCount === 0);
+
 
         console.log(`Compteurs menu mis à jour: T=${todoCount}, I=${incorrectCount}, C=${correctCount}`);
     }
@@ -262,14 +280,13 @@ class Bio201App {
          return "Inconnue";
     }
 
-    // Fonction pour générer le HTML d'UNE question (Inchangée par rapport à la version précédente où on a corrigé les commentaires)
-    createQuestionHTML(questionData, displayIndex) {
+    createQuestionHTML(questionData, displayIndex) { // Inchangée
          if (!questionData || !questionData.id) {
               console.error("Tentative de créer HTML pour question invalide:", questionData);
               return "<p style='color:red'>Erreur: Donnée de question invalide.</p>";
          }
          const questionId = questionData.id;
-         const isVerified = false; // Toujours false pour le rendu initial (pour permettre de refaire)
+         const isVerified = false;
 
          let optionsHTML = '';
          if (questionData.options && Array.isArray(questionData.options)) {
@@ -281,10 +298,9 @@ class Bio201App {
             `).join('');
          } else { optionsHTML = '<p>Erreur : Options non définies.</p>'; }
 
-         // On inclut la donnée de référence dans un attribut, mais la div est cachée initialement
          const escapedReferenceText = questionData.referenceText ? escapeHtml(questionData.referenceText) : '';
          const referenceHTML = questionData.referenceCours ? `<div class="reference-cours" style="display: none;" data-reference-text="${escapedReferenceText}" data-reference-cours="${escapeHtml(questionData.referenceCours)}"></div>` : '';
-         const feedbackHTML = `<div class="feedback-area"></div>`; // Toujours vide et caché
+         const feedbackHTML = `<div class="feedback-area"></div>`;
 
          return `
             <div class="question-block" id="${questionId}" data-question-id="${questionId}">
@@ -299,7 +315,7 @@ class Bio201App {
         `;
     }
 
-    // --- Logique de Vérification d'une Réponse --- (MODIFIÉE POUR RÉ-AFFICHER LA RÉFÉRENCE)
+    // --- Logique de Vérification d'une Réponse --- (CORRIGÉE pour l'affichage du feedback)
 
     handleVerifyClick(event) {
         const buttonElement = event.target;
@@ -307,17 +323,10 @@ class Bio201App {
         if (!questionId) return;
 
         const questionBlock = document.getElementById(questionId);
-        // Vérifie si le bouton est désactivé (signe qu'on a déjà vérifié dans ce rendu)
-        if (buttonElement.disabled) {
-             console.log(`Vérification déjà effectuée pour ${questionId} dans ce rendu.`);
-             return;
-        }
+        if (buttonElement.disabled) return;
 
         const questionData = this.quizData.find(q => q.id === questionId);
-        if (!questionData || !questionData.options || !questionData.correctAnswers) {
-             console.error("Données invalides pour la question ID:", questionId);
-             return;
-        }
+        if (!questionData || !questionData.options || !questionData.correctAnswers) return;
 
         const userCheckboxes = questionBlock.querySelectorAll(`input[name="q${questionId}_options"]:checked`);
         const userAnswers = Array.from(userCheckboxes).map(cb => cb.value);
@@ -327,43 +336,39 @@ class Bio201App {
                            userAnswers.every(ans => correctAnswers.includes(ans));
 
         let newStatus = isCorrect ? 'correct' : 'incorrect';
-        this.updateQuestionStatus(questionId, newStatus); // Met à jour l'état interne ET sauvegarde dans localStorage
+        this.updateQuestionStatus(questionId, newStatus);
 
         // --- Appliquer le Feedback Visuel ---
         const feedbackElement = questionBlock.querySelector('.feedback-area');
         const referenceElement = questionBlock.querySelector('.reference-cours');
         const allLabels = questionBlock.querySelectorAll('.options label');
 
-        // Afficher le feedback Correct/Incorrect + bonnes réponses si incorrect
         feedbackElement.className = `feedback-area ${isCorrect ? 'correct' : 'incorrect'}`;
         feedbackElement.style.display = 'block';
         if (isCorrect) {
             feedbackElement.textContent = "Correct !";
         } else {
+            // *** CORRECTION ICI : Ne plus échapper le texte des options pour textContent ***
             const correctOptionsText = correctAnswers.map(ans => {
                 const option = questionData.options.find(opt => opt.value === ans);
-                return option ? escapeHtml(option.text) : `(${escapeHtml(ans)})`;
+                return option ? option.text : `(${ans})`; // Utilisation directe de option.text
             }).join('; ');
             feedbackElement.textContent = `Incorrect. La/les bonne(s) réponse(s) étai(en)t : ${correctOptionsText}.`;
+            // *** FIN CORRECTION ***
         }
 
-        // *** CORRECTION ICI : Afficher la référence du cours si elle existe ***
         if (referenceElement && questionData.referenceCours) {
-             // Récupérer les infos depuis les données de la question (plus fiable que data-attributes ici)
              const refCours = questionData.referenceCours || '';
              const refText = questionData.referenceText || '';
-             // Mettre à jour le contenu HTML de la div de référence
              referenceElement.innerHTML = `<strong>Référence: ${escapeHtml(refCours)}</strong><br><pre>${escapeHtml(refText).replace(/<br>/g, '\n')}</pre>`;
-             referenceElement.style.display = 'block'; // Assure que la div est visible
+             referenceElement.style.display = 'block';
         } else if (referenceElement) {
-             referenceElement.style.display = 'none'; // Cache si pas de référence
+             referenceElement.style.display = 'none';
         }
-        // *** FIN CORRECTION ***
 
-        // Mettre à jour style des labels et désactiver inputs/bouton
         allLabels.forEach(label => {
             const checkbox = label.querySelector('input[type="checkbox"]');
-            if (!checkbox) return; // Sécurité
+            if (!checkbox) return;
             const optionValue = checkbox.value;
             const isCorrectAnswer = correctAnswers.includes(optionValue);
             const isSelected = userAnswers.includes(optionValue);
@@ -380,18 +385,21 @@ class Bio201App {
             checkbox.disabled = true;
         });
 
-        buttonElement.disabled = true; // Désactive CE bouton
-        questionBlock.classList.add('verified'); // Marque comme vérifié pour ce rendu
-        questionBlock.classList.remove('correct', 'incorrect'); // Nettoie
-        questionBlock.classList.add(newStatus); // Ajoute la classe du statut actuel (pour la bordure)
+        buttonElement.disabled = true;
+        questionBlock.classList.add('verified');
+        questionBlock.classList.remove('correct', 'incorrect');
+        questionBlock.classList.add(newStatus);
     }
 
     // --- Gestion des Événements --- (Inchangée)
 
+    // --- Gestion des Événements --- (Version complète et correcte)
+
     attachEventListeners() {
         console.log("Attachement des écouteurs d'événements.");
 
-        const menuContainer = this.menuView.querySelector('.menu-container');
+        // Menu: Clic sur les catégories (délégation sur le conteneur)
+        const menuContainer = this.menuView.querySelector('.menu-container'); // Cible plus précise
         menuContainer?.addEventListener('click', (event) => {
              const categoryBox = event.target.closest('.category-box');
              if (categoryBox && !categoryBox.classList.contains('disabled')) {
@@ -402,6 +410,7 @@ class Bio201App {
              }
         });
 
+        // Menu: Bouton Reset
         this.resetBtn?.addEventListener('click', () => {
             if (confirm("Êtes-vous sûr de vouloir effacer toute votre progression pour ce QCM ? Cette action est irréversible.")) {
                  console.log("Réinitialisation demandée.");
@@ -411,6 +420,7 @@ class Bio201App {
              }
         });
 
+        // Quiz: Boutons de navigation (en bas)
         this.quizBackBtn?.addEventListener('click', () => this.showMenuView());
         this.quizNextBtn?.addEventListener('click', () => {
             if (!this.quizNextBtn.disabled) {
@@ -420,11 +430,47 @@ class Bio201App {
             }
         });
 
+        // Quiz: Clic sur bouton "Vérifier" (délégation sur le formulaire)
         this.quizFormEl?.addEventListener('click', (event) => {
              if (event.target.classList.contains('verify-button')) {
+                 // Appeler handleVerifyClick DANS LE CONTEXTE de l'instance 'app'
                  this.handleVerifyClick(event);
              }
          });
+
+        // Bouton flottant "Retour Menu"
+        this.floatingBackBtn?.addEventListener('click', () => {
+            console.log("Clic sur bouton flottant Retour Menu.");
+            this.showMenuView();
+        });
+
+        // *** BLOC POUR LE POPUP INFO BIO201 (manquant dans votre version) ***
+        if (this.infoIconBio && this.infoPopupBio) {
+             // Affiche/Cache au clic (plus simple pour potentiellement mobile)
+             this.infoIconBio.addEventListener('click', (event) => {
+                 event.stopPropagation(); // Empêche la fermeture immédiate par le listener document
+                 const isVisible = this.infoPopupBio.style.display === 'block';
+                 // Inverse la visibilité
+                 this.infoPopupBio.style.display = isVisible ? 'none' : 'block';
+                 console.log(`Popup info BIO cliqué, visible: ${!isVisible}`);
+             });
+
+             // Cache si on clique ailleurs sur la page (sauf sur l'icône elle-même)
+             // Utilisation de la phase de capture (true) pour intercepter le clic avant qu'il ne "bubble"
+             document.addEventListener('click', (event) => {
+                 // Vérifie si le popup est visible ET si le clic n'est PAS sur le popup OU sur l'icône
+                 if (this.infoPopupBio.style.display === 'block' && !this.infoPopupBio.contains(event.target) && event.target !== this.infoIconBio) {
+                     console.log("Clic hors popup/icône BIO, fermeture popup.");
+                     this.infoPopupBio.style.display = 'none';
+                 }
+             }, true); // Notez le 'true' pour la phase de capture
+
+             // Optionnel : Comportement survol pour desktop (peut être ajouté si désiré)
+             // this.infoIconBio.addEventListener('mouseenter', () => { this.infoPopupBio.style.display = 'block'; });
+             // this.infoIconBio.addEventListener('mouseleave', () => { setTimeout(() => { if (!this.infoPopupBio.matches(':hover')) { this.infoPopupBio.style.display = 'none'; } }, 100); });
+             // this.infoPopupBio.addEventListener('mouseleave', () => { this.infoPopupBio.style.display = 'none'; });
+        }
+        // *** FIN BLOC POUR LE POPUP INFO BIO201 ***
     }
 
     // --- Initialisation de l'application --- (Inchangée)
@@ -469,3 +515,4 @@ function escapeHtml(unsafe) {
          .replace(/"/g, "&quot;")
          .replace(/'/g, "&#039;");
 }
+

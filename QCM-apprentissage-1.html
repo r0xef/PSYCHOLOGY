@@ -204,6 +204,29 @@
     background-color: #003d80; /* Bleu plus foncé au survol */
     color: white;
 }
+
+/* Ajoutez ceci dans la balise <style> de QCM-apprentissage-1.html */
+  .site-footer {
+    background-color: #e9ecef;
+    color: #6c757d; /* Correspond à --color-secondary */
+    text-align: center;
+    padding: 20px 15px;
+    margin-top: 40px;
+    font-size: 0.9em;
+    border-top: 1px solid #dee2e6; /* Correspond à --color-border */
+}
+.site-footer p {
+    margin: 5px 0;
+}
+.site-footer a {
+    color: #0d6efd; /* Correspond à --color-primary */
+    font-weight: bold;
+    text-decoration: none;
+}
+.site-footer a:hover {
+    text-decoration: underline;
+}
+
     </style>
 </head>
 <body>
@@ -219,6 +242,11 @@
     <div id="results"></div>
 
 </div>
+
+<footer class="site-footer">
+  <p>© Propriété de Paul Mottet 2025 - QCM Psychologie USMB</p>
+  <p>Contact : <a href="mailto:paul.mottet@etu.univ-smb.fr">paul.mottet@etu.univ-smb.fr</a></p>
+</footer>
 
 <script>
     // --- Données du Quiz (enrichies avec referenceText) ---

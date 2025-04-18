@@ -108,6 +108,79 @@ a:hover {
 }
 
 /* --- Styles Boutons Génériques --- */
+
+/* --- Styles pour le Bouton Flottant (MODIFIÉS - BEAUCOUP PLUS GRAND) --- */
+.floating-button {
+    position: fixed; /* Reste fixe à l'écran */
+    top: 30px;       /* Position depuis le haut */
+    left: 30px;      /* Position depuis la gauche */
+    z-index: 1000;   /* Au-dessus des autres éléments */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); /* Ombre marquée */
+    border-radius: 8px; /* Coins légèrement arrondis */
+
+    /* Taille par défaut (écrans larges) - VRAIMENT PLUS GRANDE */
+    padding: 20px 35px;       /* Padding très généreux */
+    font-size: 1.5rem;        /* Police nettement plus grande (env. 24px) */
+    font-family: var(--font-headings); /* Police Montserrat */
+    font-weight: 700;         /* Gras */
+    line-height: 1.3;         /* Hauteur de ligne */
+    white-space: nowrap;      /* Pour que "Retour au Menu" reste sur une ligne */
+    text-align: center;
+
+    /* Styles .button et .button-secondary hérités pour couleur etc. */
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+.floating-button:hover:not(:disabled) {
+    transform: scale(1.03); /* Effet de survol */
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.35);
+}
+
+
+/* --- Responsive : Taille ajustée pour écrans moyens --- */
+@media (max-width: 992px) { /* En dessous de ~écrans larges */
+    .floating-button {
+        top: 20px;
+        left: 20px;
+        /* Taille moyenne */
+        padding: 15px 25px;
+        font-size: 1.2rem;
+    }
+}
+
+
+/* --- Responsive : Taille ajustée pour tablettes/smartphones --- */
+@media (max-width: 768px) {
+    .floating-button {
+        top: 15px;
+        left: 15px;
+        /* Taille réduite mais lisible */
+        padding: 12px 20px;
+        font-size: 1rem; /* Taille standard */
+    }
+}
+
+/* --- Responsive : Taille minimale pour très petits écrans --- */
+@media (max-width: 480px) {
+    .floating-button {
+        top: 10px;
+        left: 10px;
+        /* Taille minimale */
+        padding: 10px 15px;
+        font-size: 0.9rem;
+    }
+}
+
+/* Optionnel: Masquer sur très petits écrans si ça gêne */
+@media (max-width: 576px) {
+    .floating-button {
+        top: 10px;
+        left: 10px;
+        padding: 6px 10px;
+        font-size: 0.8rem;
+    }
+}
+
+
 .button {
     display: inline-block;
     font-weight: 500; /* Montserrat weight */
@@ -428,4 +501,81 @@ a:hover {
      .button { padding: 0.4rem 0.8rem; font-size: 0.9rem; }
      .options label { padding: 10px 15px; }
      .question-block { padding: 20px; }
+}
+
+/* --- Styles Icône Info (partagés) --- */
+.info-icon {
+    display: inline-block;
+    width: 26px; /* Ajustez taille si besoin */
+    height: 26px;
+    background-color: rgba(0, 0, 0, 0.1); /* Fond léger sur couleur primaire */
+    color: inherit; /* Hérite couleur du titre */
+    border-radius: 50%;
+    text-align: center;
+    line-height: 26px; /* Centre verticalement */
+    font-size: 1rem; /* Ajustez si besoin */
+    font-weight: bold;
+    font-family: serif;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    user-select: none;
+    vertical-align: middle; /* Mieux aligné avec le texte */
+}
+.info-icon:hover {
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+/* --- Styles Popup Info (partagés) --- */
+.info-popup {
+    display: none; /* Caché par défaut */
+    position: absolute;
+    /* Positionnement ajusté via JS ou inline style si nécessaire */
+    /* Exemple de positionnement par défaut (peut être surchargé) */
+    top: 100%; /* Sous l'élément parent (header ici) */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%; /* Largeur relative */
+    max-width: 450px; /* Largeur max */
+    background-color: var(--color-dark);
+    color: var(--color-light);
+    border-radius: var(--border-radius);
+    padding: 15px 20px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    z-index: 1010; /* Au-dessus de tout */
+    font-size: 0.9rem;
+    line-height: 1.5;
+    text-align: left; /* Pour le contenu du popup */
+}
+.info-popup p, .info-popup ul {
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+.info-popup ul {
+    padding-left: 20px; /* Indentation liste */
+}
+.info-popup a {
+    color: #90caf9; /* Bleu clair sur fond sombre */
+    text-decoration: underline;
+}
+.info-popup strong {
+    color: var(--color-white);
+}
+
+
+/* --- Footer Commun (NOUVEAU) --- */
+.site-footer {
+    background-color: #e9ecef; /* Fond gris clair */
+    color: var(--color-secondary);
+    text-align: center;
+    padding: 20px 15px;
+    margin-top: 40px; /* Espace avant le footer */
+    font-size: 0.9em;
+    border-top: 1px solid var(--color-border);
+}
+.site-footer p {
+    margin: 5px 0;
+}
+.site-footer a {
+    color: var(--color-primary);
+    font-weight: bold;
 }

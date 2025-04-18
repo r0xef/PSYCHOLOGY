@@ -9,9 +9,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Montserrat:wght@500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style_bio201.css">
     <style>
-        /* Styles pour masquer/afficher les vues */
         .view { display: none; }
         .view.active { display: block; }
+        /* Styles pour l'icône et popup info (seront dans style_bio201.css) */
     </style>
 </head>
 <body>
@@ -20,31 +20,29 @@
 
         <div id="menu-view" class="view active">
             <header class="app-header">
-                <h1>QCM Biologie (BIO201)</h1>
+                <h1>
+                    QCM Biologie (BIO201)
+                    <span id="info-icon-bio" class="info-icon" title="Comment utiliser ce QCM ?" style="font-size: 0.7em; vertical-align: super; margin-left: 10px;">i</span>
+                </h1>
+                 <div id="info-popup-bio" class="info-popup" style="top: 70px; right: auto; left: 50%; transform: translateX(-50%); max-width: 450px; text-align: left;">
+                    <p><strong>Comment ça marche ?</strong></p>
+                    <ul>
+                        <li><strong>À faire :</strong> Questions jamais répondues. Lancez un quiz ici pour commencer.</li>
+                        <li><strong>À revoir :</strong> Questions où vous avez eu faux. Idéal pour cibler vos faiblesses. Vous pouvez les refaire !</li>
+                        <li><strong>Réussies :</strong> Questions répondues correctement. Vous pouvez aussi les refaire pour consolider.</li>
+                    </ul>
+                    <p>Le quiz fonctionne par lots de 20 questions (par défaut) dans la catégorie choisie.</p>
+                    <p>Votre progression (statut 'todo', 'incorrect', 'correct') est sauvegardée dans votre navigateur.</p>
+                    <p>Une erreur dans une question/réponse ? Merci de me le signaler : <a href="mailto:paul.mottet@etu.univ-smb.fr">paul.mottet@etu.univ-smb.fr</a></p>
+                </div>
                 <a href="Accueil.html" class="back-to-main-menu">← Retour Accueil Principal</a>
                 <p>Choisissez une catégorie pour commencer ou revoir les questions :</p>
             </header>
-
             <main class="menu-container">
-                <div id="category-todo" class="category-box category-grey" data-category="todo">
-                    <h2>À faire</h2>
-                    <p>Questions jamais répondues.</p>
-                    <span id="count-todo" class="count-badge">0</span>
-                </div>
-
-                <div id="category-incorrect" class="category-box category-red" data-category="incorrect">
-                    <h2>À revoir</h2>
-                    <p>Questions répondues incorrectement.</p>
-                    <span id="count-incorrect" class="count-badge">0</span>
-                </div>
-
-                <div id="category-correct" class="category-box category-green" data-category="correct">
-                    <h2>Réussies</h2>
-                    <p>Questions répondues correctement.</p>
-                    <span id="count-correct" class="count-badge">0</span>
-                </div>
+                 <div id="category-todo" class="category-box category-grey" data-category="todo"><h2>À faire</h2><p>Questions jamais répondues.</p><span id="count-todo" class="count-badge">0</span></div>
+                <div id="category-incorrect" class="category-box category-red" data-category="incorrect"><h2>À revoir</h2><p>Questions répondues incorrectement.</p><span id="count-incorrect" class="count-badge">0</span></div>
+                <div id="category-correct" class="category-box category-green" data-category="correct"><h2>Réussies</h2><p>Questions répondues correctement.</p><span id="count-correct" class="count-badge">0</span></div>
             </main>
-
             <footer class="app-footer">
                 <button id="reset-progress" class="button button-danger">Réinitialiser la progression</button>
                 <p>Votre progression est sauvegardée automatiquement.</p>
@@ -52,20 +50,25 @@
         </div>
 
         <div id="quiz-view" class="view">
-            <h1 id="quiz-title" class="quiz-header">QCM Biologie</h1>
-            <p id="quiz-instructions" class="quiz-instructions">Vérifiez votre réponse pour chaque question.</p>
-
-            <form id="quiz-form"></form>
-
-            <div id="quiz-results" class="quiz-results-area"></div>
-
-            <div class="quiz-navigation">
-                <button id="quiz-backBtn" class="button button-secondary">Retour au Menu</button>
-                <button id="quiz-nextBtn" class="button button-primary" disabled>Suivant</button>
-            </div>
+           <h1 id="quiz-title" class="quiz-header">QCM Biologie</h1>
+           <p id="quiz-instructions" class="quiz-instructions">Vérifiez votre réponse pour chaque question.</p>
+           <form id="quiz-form"></form>
+           <div id="quiz-results" class="quiz-results-area"></div>
+           <div class="quiz-navigation">
+               <button id="quiz-backBtn" class="button button-secondary">Retour au Menu</button>
+               <button id="quiz-nextBtn" class="button button-primary" disabled>Suivant</button>
+           </div>
         </div>
 
-    </div> <script src="questions_bio201.js"></script>
+    </div> <button id="floating-back-btn" class="button button-secondary floating-button" style="display: none;" title="Retour au menu principal du QCM BIO201">
+        Retour au Menu
+    </button>
+
+     <footer class="site-footer">
+         <p>© Propriété de Paul Mottet 2025 - QCM Psychologie USMB</p>
+         <p>Contact : <a href="mailto:paul.mottet@etu.univ-smb.fr">paul.mottet@etu.univ-smb.fr</a></p>
+     </footer>
+     <script src="questions_bio201.js"></script>
     <script src="bio201_app_script.js"></script>
 
 </body>
