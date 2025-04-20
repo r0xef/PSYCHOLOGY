@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QCM Influence Sociale - Révision Psychologie USMB</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Montserrat:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style_influence.css">
+    <style>
+        /* Styles Minimaux pour la structure des vues SPA (à compléter dans le CSS lié) */
+        body { font-family: 'Lato', sans-serif; margin: 0; padding: 0; background-color: #f8f9fa; }
+        .view { display: none; /* Caché par défaut */ padding: 20px; animation: viewFadeIn 0.3s ease-out; }
+        .view.active { display: block; /* Affiché si classe 'active' */ }
+        @keyframes viewFadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* --- Styles du Footer Commun (copié depuis Accueil) --- */
+        :root { /* Variables nécessaires pour le footer */
+            --color-primary: #0d6efd;
+            --color-secondary: #6c757d;
+            --color-border: #dee2e6;
+        }
+        .site-footer { background-color: #e9ecef; color: var(--color-secondary); text-align: center; padding: 20px 15px; margin-top: 40px; font-size: 0.9em; border-top: 1px solid var(--color-border); width: 100%; box-sizing: border-box; }
+        .site-footer p { margin: 5px 0; }
+        .site-footer a { color: var(--color-primary); font-weight: bold; text-decoration: none; }
+        .site-footer a:hover { text-decoration: underline; }
+
+        /* Styles basiques pour les boutons (à affiner dans le CSS) */
+        .button { padding: 10px 15px; margin: 5px; cursor: pointer; border: none; border-radius: 4px; font-size: 1rem; }
+        .button-primary { background-color: #0d6efd; color: white; }
+        .button-secondary { background-color: #6c757d; color: white; }
+        .button-danger { background-color: #dc3545; color: white; }
+        .button:disabled { background-color: #adb5bd; cursor: not-allowed; }
+
+        /* Styles pour la sélection de partie (à affiner) */
+        #part-selection-view h2 { text-align: center; color: #343a40; }
+        #part-buttons-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; margin-top: 20px; margin-bottom: 30px;}
+        .part-button { min-width: 200px; padding: 15px 20px; font-size: 1.1rem; }
+
+        /* Styles pour le menu des catégories (à affiner, inspiré de BIO201) */
+        #menu-view h2 { text-align: center; color: #343a40; }
+        .category-menu { display: flex; justify-content: space-around; flex-wrap: wrap; gap: 20px; margin-top: 20px; margin-bottom: 30px; }
+        .category-button { flex: 1; min-width: 150px; padding: 20px; text-align: center; border: 1px solid #dee2e6; border-radius: 5px; background-color: white; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
+        .category-button:hover:not(.disabled) { transform: translateY(-3px); box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .category-button.disabled { background-color: #e9ecef; color: #6c757d; cursor: not-allowed; }
+        .category-count { display: block; font-size: 1.5rem; font-weight: bold; margin-top: 5px; }
+        .menu-actions { text-align: center; margin-top: 20px; }
+
+        /* Styles pour la vue Quiz (feedback détaillé, etc. à affiner dans le CSS) */
+        #quiz-view h2, #quiz-instructions { text-align: center; margin-bottom: 15px; }
+        .question-block { background-color: white; padding: 20px; margin-bottom: 20px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .question-text { font-weight: bold; margin-bottom: 15px; font-size: 1.1rem; }
+        .options-list { list-style: none; padding: 0; margin-bottom: 15px; }
+        .options-list li { margin-bottom: 10px; }
+        .options-list label { margin-left: 8px; cursor: pointer; }
+        .feedback-area { border-top: 1px dashed #ccc; margin-top: 15px; padding-top: 15px; font-size: 0.95rem; line-height: 1.5; }
+        .feedback-area ul { list-style: none; padding: 0; }
+        .feedback-area li { margin-bottom: 12px; padding: 8px; border-radius: 4px; }
+        /* Styles spécifiques pour correct/incorrect/selection/justification à définir dans le CSS */
+        .show-slides-btn { margin-top: 10px; }
+        .quiz-navigation { text-align: center; margin-top: 30px; }
+        #floating-back-btn { position: fixed; top: 15px; left: 15px; z-index: 1000; display: none; /* Géré par JS */ }
+
+    </style>
+</head>
+<body>
+
+    <button id="floating-back-btn" class="button button-secondary">&larr; Retour Menu Catégories</button>
+
+    <header style="padding: 10px 20px; background-color: #dee2e6; display: flex; justify-content: space-between; align-items: center;">
+        <a href="Accueil.html" class="button button-secondary">&larr; Accueil Principal</a>
+        <h1 style="margin: 0; font-size: 1.5rem;">QCM Influence Sociale</h1>
+        <span style="width: 100px;"></span> </header>
+
+    <main>
+
+        <div id="part-selection-view" class="view active">
+            <h2>Influence Sociale - Choisir une Partie</h2>
+            <div id="part-buttons-container">
+                <p>Chargement des parties...</p>
+            </div>
+             <div style="text-align: center; margin-top: 20px;">
+                 <a href="Accueil.html" class="button button-secondary">Retour à l'Accueil Principal</a>
+             </div>
+        </div>
+
+        <div id="menu-view" class="view">
+            <h2 id="menu-title">Catégories</h2> <div class="category-menu">
+                <div id="category-todo" class="category-button" data-category="todo">
+                    À Faire
+                    <span id="count-todo" class="category-count">?</span>
+                </div>
+                <div id="category-incorrect" class="category-button" data-category="incorrect">
+                    À Revoir
+                    <span id="count-incorrect" class="category-count">?</span>
+                </div>
+                <div id="category-correct" class="category-button" data-category="correct">
+                    Réussies
+                    <span id="count-correct" class="category-count">?</span>
+                </div>
+            </div>
+            <div class="menu-actions">
+                 <button id="back-to-part-selection" class="button button-secondary">&larr; Changer de Partie</button>
+                 <button id="reset-progress" class="button button-danger">Réinitialiser la Progression</button>
+            </div>
+             </div>
+
+        <div id="quiz-view" class="view">
+            <h2 id="quiz-title">Quiz</h2>
+            <p id="quiz-instructions">Instructions...</p>
+
+            <form id="quiz-form">
+                </form>
+
+            <div class="quiz-navigation">
+                <button id="quiz-backBtn" class="button button-secondary">&larr; Retour Menu Catégories</button>
+                <button id="quiz-nextBtn" class="button button-primary">Lot Suivant &rarr;</button>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="site-footer">
+        <p>© Propriété de Paul Mottet 2025 - QCM Psychologie USMB</p>
+        <p>Contact : <a href="mailto:paul.mottet@etu.univ-smb.fr">paul.mottet@etu.univ-smb.fr</a></p>
+    </footer>
+
+    <script src="questions_influence.js"></script>
+    <script src="influence_app_script.js"></script>
+
+</body>
+</html>

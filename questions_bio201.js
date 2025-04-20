@@ -27,7 +27,7 @@ const quizDataBio1 = [
       { value: 'a', text: "a) Un contrôle continu et un oral." },
       { value: 'b', text: "b) Uniquement un examen oral." },
       { value: 'c', text: "c) Un dossier à rendre et un QCM." },
-      { value: 'd', text: "d) Un examen final écrit d'1h." }
+      { value: 'd', text: "d) Un examen final écrit d'1h sous forme de QCM." }
     ],
     correctAnswers: ['d'],
     referenceCours: "[BIO201_Part1_P2]",
@@ -746,7 +746,7 @@ const quizDataBio2 = [
     id: 'bio2_q18',
     text: "Quelles sont les fonctions associées au Réticulum Endoplasmique Rugueux (REG) ?", // Question à 2 réponses justes (4/15)
     options: [
-      { value: 'a', text: "a) Synthèse des lipides membranaires." }, // Fonction du REL
+      { value: 'a', text: "a) Assemblage des lipides membranaires pour former des membranes plasmiques." }, // Fonction du REL
       { value: 'b', text: "b) Synthèse des protéines destinées à l'exportation ou aux membranes." },
       { value: 'c', text: "c) Production d'ATP par respiration." }, // Fonction mitochondrie
       { value: 'd', text: "d) Repliement et modifications (ex: glycosylation) des protéines synthétisées." }
@@ -1303,7 +1303,7 @@ const quizDataBio2 = [
     id: 'bio2_q58',
     text: "Le Réticulum Endoplasmique Lisse (REL) est principalement impliqué dans : (Choisissez toutes les réponses applicables)", // Question à 2 réponses justes (10/15) // Redondance Q19
     options: [
-      { value: 'a', text: "a) La synthèse des protéines sécrétées." },
+      { value: 'a', text: "a) Le décodage de l'ARNm" },
       { value: 'b', text: "b) La synthèse des lipides." },
       { value: 'c', text: "c) La détoxification." },
       { value: 'd', text: "d) La production d'ATP." }
