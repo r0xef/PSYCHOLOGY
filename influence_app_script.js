@@ -475,28 +475,56 @@ class InfluenceApp {
     }
 
     // --- Gestionnaire pour le clic sur "Afficher Diapos" ---
-    handleShowSlidesClick(event) {
-        const buttonElement = event.target;
-        const slidesJson = buttonElement.dataset.slides;
-        if (!slidesJson) return;
+    // Dans influence_app_script.js, dans la classe InfluenceApp
 
-        try {
-            const slideFiles = JSON.parse(slidesJson);
-            if (Array.isArray(slideFiles)) {
-                slideFiles.forEach(filename => {
-                    if (filename) {
-                         const filePath = this.SLIDES_FOLDER_PATH + filename;
-                         console.log(`Ouverture de la diapo: ${filePath}`);
-                         window.open(filePath, '_blank'); // Ouvre dans un nouvel onglet
-                    }
-                });
-            }
-        } catch (e) {
-            console.error("Erreur lors du parsing des données des diapos:", e);
-            alert("Impossible de charger les informations des diapositives.");
-        }
+handleShowSlidesClick(event) {
+    event.preventDefault(); // Bonne pratique pour les gestionnaires de clic sur bouton
+
+    const buttonElement = event.target.closest('.show-slides-btn');
+    if (!buttonElement) return;
+
+    const slidesJson = buttonElement.dataset.slides;
+    const questionId = buttonElement.closest('.question-block')?.dataset.questionId;
+
+    if (!slidesJson || !questionId) {
+        console.error("Données manquantes pour afficher les diapos (slides ou questionId)");
+        return;
     }
 
+    const questionData = this.quizData.find(q => q.id === questionId);
+    const targetPage = questionData?.targetPage; // Récupère le numéro de la plus petite page
+    const hasMultiple = questionData?.hasMultiplePages === true; // Vérifie si plusieurs pages étaient mentionnées
+
+    try {
+        const slideFiles = JSON.parse(slidesJson);
+        if (Array.isArray(slideFiles)) {
+            let opened = false; // Pour savoir si on a ouvert au moins un onglet
+            slideFiles.forEach(filename => {
+                if (filename) {
+                    let filePath = this.SLIDES_FOLDER_PATH + filename;
+                    // Ajoute le fragment de page SI targetPage est défini
+                    if (targetPage && Number.isInteger(targetPage) && targetPage > 0) {
+                        filePath += `#page=${targetPage}`;
+                    }
+                    console.log(`Ouverture de la diapo: ${filePath}`);
+                    window.open(filePath, '_blank');
+                    opened = true;
+                }
+            });
+
+            // Affiche l'alerte APRÈS avoir ouvert l'onglet (pour ne pas bloquer l'ouverture)
+            if (opened && hasMultiple) {
+                // Utilise setTimeout pour laisser le temps à l'onglet de s'ouvrir avant l'alerte
+                setTimeout(() => {
+                    alert("Note : D'autres pages peuvent être pertinentes pour cette question. Consultez la justification pour plus de détails.");
+                }, 100); // Petit délai
+            }
+        }
+    } catch (e) {
+        console.error("Erreur lors du parsing ou ouverture des diapos:", e);
+        alert("Impossible de charger les informations des diapositives.");
+    }
+}
 
     // --- Gestion des Événements --- (Adaptée pour les nouvelles vues et boutons)
 

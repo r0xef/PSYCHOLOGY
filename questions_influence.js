@@ -35,6 +35,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "c"
     ],
+    "targetPage": 5,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -74,6 +75,7 @@ const quizDataInfluence = [
       "a",
       "b"
     ],
+    "targetPage": 6,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -112,6 +114,8 @@ const quizDataInfluence = [
     "correctAnswers": [
       "c"
     ],
+    "targetPage": 7,
+    "hasMultiplePages": true,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -151,6 +155,8 @@ const quizDataInfluence = [
       "a",
       "c"
     ],
+    "targetPage": 10,
+    "hasMultiplePages": true,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -189,6 +195,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "c"
     ],
+    "targetPage": 12,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -227,6 +234,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "c"
     ],
+    "targetPage": 16,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -265,6 +273,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "c"
     ],
+    "targetPage": 15,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -303,6 +312,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "c"
     ],
+    "targetPage": 16,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -341,6 +351,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "c"
     ],
+    "targetPage": 20,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -379,6 +390,8 @@ const quizDataInfluence = [
     "correctAnswers": [
       "c"
     ],
+    "targetPage": 21,
+    "hasMultiplePages": true,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -418,6 +431,7 @@ const quizDataInfluence = [
       "b",
       "d"
     ],
+    "targetPage": 22,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -458,6 +472,7 @@ const quizDataInfluence = [
       "c",
       "d"
     ],
+    "targetPage": 23,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -498,6 +513,7 @@ const quizDataInfluence = [
       "b",
       "c"
     ],
+    "targetPage": 22,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -536,6 +552,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "b"
     ],
+    "targetPage": 27,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -574,6 +591,8 @@ const quizDataInfluence = [
     "correctAnswers": [
       "b"
     ],
+    "targetPage": 27,
+    "hasMultiplePages": true,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -612,6 +631,8 @@ const quizDataInfluence = [
     "correctAnswers": [
       "c"
     ],
+    "targetPage": 30,
+    "hasMultiplePages": true,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -650,6 +671,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "b"
     ],
+    "targetPage": 32,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -688,6 +710,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "b"
     ],
+    "targetPage": 35,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -726,6 +749,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "c"
     ],
+    "targetPage": 32,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -803,6 +827,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "b"
     ],
+    "targetPage": 54,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -841,6 +866,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "b"
     ],
+    "targetPage": 52,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -879,6 +905,8 @@ const quizDataInfluence = [
     "correctAnswers": [
       "c"
     ],
+    "targetPage": 58,
+    "hasMultiplePages": true,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -917,6 +945,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "c"
     ],
+    "targetPage": 63,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -956,6 +985,7 @@ const quizDataInfluence = [
       "a",
       "c"
     ],
+    "targetPage": 64,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -1032,6 +1062,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "b"
     ],
+    "targetPage": 76,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -1071,6 +1102,7 @@ const quizDataInfluence = [
       "a",
       "c"
     ],
+    "targetPage": 80,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -1111,6 +1143,7 @@ const quizDataInfluence = [
       "c",
       "d"
     ],
+    "targetPage": 93,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -1149,6 +1182,8 @@ const quizDataInfluence = [
     "correctAnswers": [
       "b"
     ],
+    "targetPage": 97,
+    "hasMultiplePages": true,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -1189,6 +1224,7 @@ const quizDataInfluence = [
       "b",
       "d"
     ],
+    "targetPage": 100,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -1227,6 +1263,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "b"
     ],
+    "targetPage": 115,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -1266,6 +1303,7 @@ const quizDataInfluence = [
       "a",
       "c"
     ],
+    "targetPage": 112,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -1304,6 +1342,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "b"
     ],
+    "targetPage": 114,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -1343,6 +1382,7 @@ const quizDataInfluence = [
       "a",
       "c"
     ],
+    "targetPage": 124,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -1381,6 +1421,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "c"
     ],
+    "targetPage": 127,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -1422,6 +1463,7 @@ const quizDataInfluence = [
       "c",
       "d"
     ],
+    "targetPage": 129,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -1462,6 +1504,7 @@ const quizDataInfluence = [
       "c",
       "d"
     ],
+    "targetPage": 130,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -1502,6 +1545,7 @@ const quizDataInfluence = [
       "c",
       "d"
     ],
+    "targetPage": 132,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -1543,6 +1587,7 @@ const quizDataInfluence = [
       "c",
       "d"
     ],
+    "targetPage": 132,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -1583,6 +1628,7 @@ const quizDataInfluence = [
       "c",
       "d"
     ],
+    "targetPage": 134,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -1621,6 +1667,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "b"
     ],
+    "targetPage": 135,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -1659,6 +1706,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "b"
     ],
+    "targetPage": 136,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -1697,6 +1745,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "b"
     ],
+    "targetPage": 138,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -1735,6 +1784,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "b"
     ],
+    "targetPage": 141,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -1812,6 +1862,7 @@ const quizDataInfluence = [
       "a",
       "c"
     ],
+    "targetPage": 20,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -1852,6 +1903,7 @@ const quizDataInfluence = [
       "b",
       "c"
     ],
+    "targetPage": 10,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -1891,6 +1943,7 @@ const quizDataInfluence = [
       "a",
       "c"
     ],
+    "targetPage": 37,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -1930,6 +1983,7 @@ const quizDataInfluence = [
       "a",
       "c"
     ],
+    "targetPage": 35,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -2007,6 +2061,7 @@ const quizDataInfluence = [
       "a",
       "c"
     ],
+    "targetPage": 66,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -2047,6 +2102,7 @@ const quizDataInfluence = [
       "b",
       "c"
     ],
+    "targetPage": 110,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -2124,6 +2180,7 @@ const quizDataInfluence = [
       "a",
       "c"
     ],
+    "targetPage": 137,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -2162,6 +2219,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "b"
     ],
+    "targetPage": 96,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -2200,6 +2258,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "b"
     ],
+    "targetPage": 97,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -2238,6 +2297,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "c"
     ],
+    "targetPage": 99,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -2276,6 +2336,8 @@ const quizDataInfluence = [
     "correctAnswers": [
       "c"
     ],
+    "targetPage": 99,
+    "hasMultiplePages": true,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -2314,6 +2376,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "c"
     ],
+    "targetPage": 100,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -2352,6 +2415,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "b"
     ],
+    "targetPage": 102,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -2390,6 +2454,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "b"
     ],
+    "targetPage": 102,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -2428,6 +2493,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "c"
     ],
+    "targetPage": 102,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -2466,6 +2532,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "b"
     ],
+    "targetPage": 105,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -2504,6 +2571,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "b"
     ],
+    "targetPage": 106,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -2542,6 +2610,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "b"
     ],
+    "targetPage": 107,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -2580,6 +2649,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "c"
     ],
+    "targetPage": 108,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -2618,6 +2688,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "b"
     ],
+    "targetPage": 109,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -2656,6 +2727,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "c"
     ],
+    "targetPage": 109,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -2694,6 +2766,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "b"
     ],
+    "targetPage": 110,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -2732,6 +2805,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "b"
     ],
+    "targetPage": 112,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -2770,6 +2844,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "b"
     ],
+    "targetPage": 112,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -2808,6 +2883,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "c"
     ],
+    "targetPage": 113,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -2846,6 +2922,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "c"
     ],
+    "targetPage": 114,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -2884,6 +2961,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "b"
     ],
+    "targetPage": 115,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -2922,6 +3000,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "c"
     ],
+    "targetPage": 115,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -2960,6 +3039,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "b"
     ],
+    "targetPage": 117,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -2998,6 +3078,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "b"
     ],
+    "targetPage": 119,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -3036,6 +3117,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "b"
     ],
+    "targetPage": 120,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -3074,6 +3156,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "b"
     ],
+    "targetPage": 121,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -3112,6 +3195,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "b"
     ],
+    "targetPage": 122,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -3150,6 +3234,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "b"
     ],
+    "targetPage": 123,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -3188,6 +3273,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "c"
     ],
+    "targetPage": 124,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -3226,6 +3312,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "b"
     ],
+    "targetPage": 124,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -3264,6 +3351,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "b"
     ],
+    "targetPage": 124,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -3302,6 +3390,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "c"
     ],
+    "targetPage": 125,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -3340,6 +3429,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "b"
     ],
+    "targetPage": 126,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -3378,6 +3468,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "b"
     ],
+    "targetPage": 127,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -3416,6 +3507,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "a"
     ],
+    "targetPage": 127,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -3454,6 +3546,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "c"
     ],
+    "targetPage": 128,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -3495,6 +3588,7 @@ const quizDataInfluence = [
       "c",
       "d"
     ],
+    "targetPage": 129,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -3533,6 +3627,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "b"
     ],
+    "targetPage": 129,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -3573,6 +3668,7 @@ const quizDataInfluence = [
       "c",
       "d"
     ],
+    "targetPage": 130,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -3611,6 +3707,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "b"
     ],
+    "targetPage": 130,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -3649,6 +3746,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "c"
     ],
+    "targetPage": 131,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -3687,6 +3785,8 @@ const quizDataInfluence = [
     "correctAnswers": [
       "b"
     ],
+    "targetPage": 131,
+    "hasMultiplePages": true,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -3725,6 +3825,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "c"
     ],
+    "targetPage": 132,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -3763,6 +3864,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "c"
     ],
+    "targetPage": 132,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -3801,6 +3903,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "c"
     ],
+    "targetPage": 133,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -3839,6 +3942,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "c"
     ],
+    "targetPage": 134,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -3877,6 +3981,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "b"
     ],
+    "targetPage": 135,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -3915,6 +4020,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "b"
     ],
+    "targetPage": 135,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -3953,6 +4059,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "b"
     ],
+    "targetPage": 136,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -3991,6 +4098,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "c"
     ],
+    "targetPage": 136,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -4029,6 +4137,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "c"
     ],
+    "targetPage": 137,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -4067,6 +4176,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "b"
     ],
+    "targetPage": 137,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -4105,6 +4215,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "c"
     ],
+    "targetPage": 138,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -4143,6 +4254,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "b"
     ],
+    "targetPage": 140,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -4181,6 +4293,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "b"
     ],
+    "targetPage": 139,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -4219,6 +4332,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "b"
     ],
+    "targetPage": 141,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -4257,6 +4371,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "b"
     ],
+    "targetPage": 141,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -4295,6 +4410,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "c"
     ],
+    "targetPage": 141,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -4376,6 +4492,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "c"
     ],
+    "targetPage": 100,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -4414,6 +4531,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "c"
     ],
+    "targetPage": 109,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -4452,6 +4570,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "c"
     ],
+    "targetPage": 114,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -4490,6 +4609,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "b"
     ],
+    "targetPage": 102,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -4528,6 +4648,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "b"
     ],
+    "targetPage": 123,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -4566,6 +4687,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "c"
     ],
+    "targetPage": 7,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -4604,6 +4726,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "b"
     ],
+    "targetPage": 16,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -4642,6 +4765,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "c"
     ],
+    "targetPage": 16,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -4680,6 +4804,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "c"
     ],
+    "targetPage": 12,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -4718,6 +4843,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "b"
     ],
+    "targetPage": 30,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -4756,6 +4882,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "c"
     ],
+    "targetPage": 32,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -4794,6 +4921,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "c"
     ],
+    "targetPage": 36,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -4832,6 +4960,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "b"
     ],
+    "targetPage": 46,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -4870,6 +4999,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "a"
     ],
+    "targetPage": 49,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -4908,6 +5038,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "c"
     ],
+    "targetPage": 64,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -4946,6 +5077,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "c"
     ],
+    "targetPage": 67,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -4984,6 +5116,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "c"
     ],
+    "targetPage": 70,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -5022,6 +5155,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "b"
     ],
+    "targetPage": 87,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -5060,6 +5194,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "c"
     ],
+    "targetPage": 100,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -5098,6 +5233,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "c"
     ],
+    "targetPage": 102,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -5136,6 +5272,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "a"
     ],
+    "targetPage": 126,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -5174,6 +5311,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "b"
     ],
+    "targetPage": 126,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -5212,6 +5350,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "b"
     ],
+    "targetPage": 123,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -5253,6 +5392,7 @@ const quizDataInfluence = [
       "c",
       "d"
     ],
+    "targetPage": 129,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -5293,6 +5433,7 @@ const quizDataInfluence = [
       "c",
       "d"
     ],
+    "targetPage": 130,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -5333,6 +5474,7 @@ const quizDataInfluence = [
       "c",
       "d"
     ],
+    "targetPage": 132,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -5374,6 +5516,7 @@ const quizDataInfluence = [
       "c",
       "d"
     ],
+    "targetPage": 132,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -5414,6 +5557,7 @@ const quizDataInfluence = [
       "c",
       "d"
     ],
+    "targetPage": 134,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -5452,6 +5596,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "b"
     ],
+    "targetPage": 135,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -5490,6 +5635,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "b"
     ],
+    "targetPage": 136,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -5528,6 +5674,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "b"
     ],
+    "targetPage": 138,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -5566,6 +5713,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "b"
     ],
+    "targetPage": 141,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -5643,6 +5791,7 @@ const quizDataInfluence = [
       "a",
       "c"
     ],
+    "targetPage": 20,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -5683,6 +5832,7 @@ const quizDataInfluence = [
       "b",
       "c"
     ],
+    "targetPage": 10,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -5722,6 +5872,7 @@ const quizDataInfluence = [
       "a",
       "c"
     ],
+    "targetPage": 37,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -5761,6 +5912,7 @@ const quizDataInfluence = [
       "a",
       "c"
     ],
+    "targetPage": 35,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -5838,6 +5990,7 @@ const quizDataInfluence = [
       "a",
       "c"
     ],
+    "targetPage": 66,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -5878,6 +6031,7 @@ const quizDataInfluence = [
       "b",
       "c"
     ],
+    "targetPage": 110,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -5955,6 +6109,7 @@ const quizDataInfluence = [
       "a",
       "c"
     ],
+    "targetPage": 137,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -5993,6 +6148,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "b"
     ],
+    "targetPage": 37,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -6031,6 +6187,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "c"
     ],
+    "targetPage": 36,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -6069,6 +6226,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "b"
     ],
+    "targetPage": 23,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -6107,6 +6265,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "b"
     ],
+    "targetPage": 107,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -6145,6 +6304,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "c"
     ],
+    "targetPage": 27,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -6183,6 +6343,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "c"
     ],
+    "targetPage": 64,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -6221,6 +6382,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "c"
     ],
+    "targetPage": 70,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -6259,6 +6421,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "b"
     ],
+    "targetPage": 57,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -6297,6 +6460,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "c"
     ],
+    "targetPage": 109,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -6335,6 +6499,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "b"
     ],
+    "targetPage": 112,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -6373,6 +6538,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "c"
     ],
+    "targetPage": 114,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -6411,6 +6577,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "d"
     ],
+    "targetPage": 115,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -6449,6 +6616,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "a"
     ],
+    "targetPage": 110,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -6487,6 +6655,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "b"
     ],
+    "targetPage": 123,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -6525,6 +6694,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "c"
     ],
+    "targetPage": 126,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -6563,6 +6733,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "c"
     ],
+    "targetPage": 95,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -6601,6 +6772,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "a"
     ],
+    "targetPage": 138,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -6639,6 +6811,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "c"
     ],
+    "targetPage": 141,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -6677,6 +6850,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "c"
     ],
+    "targetPage": 130,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -6715,6 +6889,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "c"
     ],
+    "targetPage": 125,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -6755,6 +6930,7 @@ const quizDataInfluence = [
       "c",
       "e"
     ],
+    "targetPage": 24,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -6794,6 +6970,7 @@ const quizDataInfluence = [
       "a",
       "c"
     ],
+    "targetPage": 35,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -6834,6 +7011,7 @@ const quizDataInfluence = [
       "b",
       "d"
     ],
+    "targetPage": 53,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -6873,6 +7051,8 @@ const quizDataInfluence = [
       "b",
       "d"
     ],
+    "targetPage": 58,
+    "hasMultiplePages": true,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -6913,6 +7093,7 @@ const quizDataInfluence = [
       "b",
       "c"
     ],
+    "targetPage": 76,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -6952,6 +7133,7 @@ const quizDataInfluence = [
       "a",
       "c"
     ],
+    "targetPage": 102,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -6988,6 +7170,7 @@ const quizDataInfluence = [
       "c",
       "d"
     ],
+    "targetPage": 110,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -7027,6 +7210,7 @@ const quizDataInfluence = [
       "a",
       "c"
     ],
+    "targetPage": 110,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -7066,6 +7250,7 @@ const quizDataInfluence = [
       "a",
       "c"
     ],
+    "targetPage": 127,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -7106,6 +7291,7 @@ const quizDataInfluence = [
       "b",
       "d"
     ],
+    "targetPage": 128,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -7145,6 +7331,7 @@ const quizDataInfluence = [
       "a",
       "c"
     ],
+    "targetPage": 135,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -7184,6 +7371,7 @@ const quizDataInfluence = [
       "a",
       "c"
     ],
+    "targetPage": 138,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -7223,6 +7411,7 @@ const quizDataInfluence = [
       "b",
       "d"
     ],
+    "targetPage": 87,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -7263,6 +7452,7 @@ const quizDataInfluence = [
       "b",
       "c"
     ],
+    "targetPage": 24,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -7302,6 +7492,7 @@ const quizDataInfluence = [
       "a",
       "c"
     ],
+    "targetPage": 52,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -7341,6 +7532,7 @@ const quizDataInfluence = [
       "a",
       "c"
     ],
+    "targetPage": 109,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -7379,6 +7571,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "a"
     ],
+    "targetPage": 22,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -7417,6 +7610,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "c"
     ],
+    "targetPage": 5,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -7456,6 +7650,7 @@ const quizDataInfluence = [
       "a",
       "b"
     ],
+    "targetPage": 6,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -7494,6 +7689,8 @@ const quizDataInfluence = [
     "correctAnswers": [
       "c"
     ],
+    "targetPage": 7,
+    "hasMultiplePages": true,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -7533,6 +7730,8 @@ const quizDataInfluence = [
       "a",
       "c"
     ],
+    "targetPage": 10,
+    "hasMultiplePages": true,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -7571,6 +7770,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "c"
     ],
+    "targetPage": 12,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -7609,6 +7809,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "c"
     ],
+    "targetPage": 16,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -7647,6 +7848,8 @@ const quizDataInfluence = [
     "correctAnswers": [
       "c"
     ],
+    "targetPage": 32,
+    "hasMultiplePages": true,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -7680,6 +7883,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "c"
     ],
+    "targetPage": 67,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -7718,6 +7922,8 @@ const quizDataInfluence = [
     "correctAnswers": [
       "b"
     ],
+    "targetPage": 100,
+    "hasMultiplePages": true,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -7751,6 +7957,8 @@ const quizDataInfluence = [
     "correctAnswers": [
       "b"
     ],
+    "targetPage": 128,
+    "hasMultiplePages": true,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -7789,6 +7997,7 @@ const quizDataInfluence = [
     "correctAnswers": [
       "b"
     ],
+    "targetPage": 110,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -7827,6 +8036,8 @@ const quizDataInfluence = [
     "correctAnswers": [
       "b"
     ],
+    "targetPage": 140,
+    "hasMultiplePages": true,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -7865,6 +8076,8 @@ const quizDataInfluence = [
     "correctAnswers": [
       "c"
     ],
+    "targetPage": 12,
+    "hasMultiplePages": true,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -7969,6 +8182,8 @@ const quizDataInfluence = [
     "correctAnswers": [
       "c"
     ],
+    "targetPage": 139,
+    "hasMultiplePages": true,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
@@ -8007,6 +8222,8 @@ const quizDataInfluence = [
     "correctAnswers": [
       "c"
     ],
+    "targetPage": 15,
+    "hasMultiplePages": true,
     "slideFiles": [
       "témoignage2023-doc-etudiant.pdf"
     ]
